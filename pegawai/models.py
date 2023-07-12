@@ -1,5 +1,6 @@
 from django.utils.translation import gettext_lazy as _
 from django.db import models
+from django.conf import settings
 
 
 class Pegawai(models.Model):
@@ -11,6 +12,9 @@ class Pegawai(models.Model):
     jenis_kelamin_pegawai = models.BooleanField(blank=False)
     surel_pegawai = models.EmailField(blank=False, max_length=200)
     telepon_pegawai = models.CharField(blank=False, max_length=200)
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=False
+    )
 
 
 def pegawai_jalur_direktori(instance, filename):

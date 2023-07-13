@@ -1,8 +1,12 @@
 from django.urls import path
+from django.contrib.auth.decorators import login_required
 from . import views
 
 urlpatterns = [
     path("", views.signin, name="signin"),
     path("signup/", views.signup, name="signup"),
     path("beranda/", views.index, name="index"),
+    path("signout/", views.signout, name="signout"),
+    path("profil/", views.profile, name="profile"),
+    path("add_pegawai/", login_required(views.add_pegawai), name="add_pegawai"),
 ]

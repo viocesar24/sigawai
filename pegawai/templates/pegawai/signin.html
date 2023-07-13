@@ -9,7 +9,7 @@
         integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
 </head>
 
-<body class="bg-primary">
+<body class="bg-secondary">
     <div class="container d-flex justify-content-center align-items-center vh-100">
         <div class="card w-50 text-bg-light border-dark shadow-lg">
             <div class="card-header text-center">
@@ -19,6 +19,17 @@
                 <h1 class="card-title">Masuk</h1>
                 <form method="post">
                     {% csrf_token %}
+                    {% if messages %}
+                    {% for message in messages %}
+                    {% if message.tags == 'success' %}
+                    <div class="alert alert-success" role="alert">{{ message }}</div>
+                    {% elif message.tags == 'error' %}
+                    <div class="alert alert-danger" role="alert">{{ message }}</div>
+                    {% else %}
+                    <div class="alert" role="alert">{{ message }}</div>
+                    {% endif %}
+                    {% endfor %}
+                    {% endif %}
                     <div class="mb-3">
                         <label for="username" class="form-label">Username</label>
                         <input type="text" class="form-control" id="username" name="username"

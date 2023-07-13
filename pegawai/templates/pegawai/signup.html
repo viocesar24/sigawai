@@ -9,7 +9,7 @@
         integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
 </head>
 
-<body class="bg-primary">
+<body class="bg-secondary">
     <div class="container d-flex justify-content-center align-items-center vh-100">
         <div class="card w-50 text-bg-light border-dark shadow-lg">
             <div class="card-header text-center">
@@ -21,9 +21,7 @@
                     {% csrf_token %}
                     {% if messages %}
                     {% for message in messages %}
-                    <div class="alert alert-danger" role="alert">
-                        {{ message }}
-                    </div>
+                    <div class="alert alert-danger" role="alert">{{ message }}</div>
                     {% endfor %}
                     {% endif %}
                     <div class="mb-3">

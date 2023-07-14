@@ -5,32 +5,27 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Bootstrap demo</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
 </head>
 
 <body>
     <nav class="navbar navbar-expand-lg bg-body-tertiary">
         <div class="container-fluid">
             <a class="navbar-brand" href="{% url 'index' %}">SiGawai</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo02"
-                aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse justify-content-end" id="navbarTogglerDemo02">
                 <div class="d-flex">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
-                            <a class="nav-link {% if request.path == '/beranda/' %}active{% endif %}"
-                                aria-current="page" href="{% url 'index' %}">Beranda</a>
+                            <a class="nav-link {% if request.path == '/beranda/' %}active{% endif %}" aria-current="page" href="{% url 'index' %}">Beranda</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link {% if request.path == '/profil/' %}active{% endif %}"
-                                href="{% url 'profile' %}">Profil {{ username }}</a>
+                            <a class="nav-link {% if request.path == '/profil/' %}active{% endif %}" href="{% url 'profile' %}">Profil {{ username }}</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link {% if request.path == '/signout/' %}active{% endif %}"
-                                href="{% url 'signout' %}">Keluar</a>
+                            <a class="nav-link {% if request.path == '/signout/' %}active{% endif %}" href="{% url 'signout' %}">Keluar</a>
                         </li>
                     </ul>
                 </div>
@@ -42,21 +37,16 @@
             <div class="card-header">
                 <ul class="nav nav-tabs" id="myTab" role="tablist">
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link active" id="profile-tab" data-bs-toggle="tab"
-                            data-bs-target="#profile-tab-pane" type="button" role="tab" aria-controls="profile-tab-pane"
-                            aria-selected="false">Profile</button>
+                        <button class="nav-link active" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile-tab-pane" type="button" role="tab" aria-controls="profile-tab-pane" aria-selected="false">Profile</button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="contact-tab" data-bs-toggle="tab"
-                            data-bs-target="#contact-tab-pane" type="button" role="tab" aria-controls="contact-tab-pane"
-                            aria-selected="false">Contact</button>
+                        <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact-tab-pane" type="button" role="tab" aria-controls="contact-tab-pane" aria-selected="false">Contact</button>
                     </li>
                 </ul>
             </div>
             <div class="card-body">
                 <div class="tab-content" id="myTabContent">
-                    <div class="tab-pane fade show active" id="profile-tab-pane" role="tabpanel"
-                        aria-labelledby="profile-tab" tabindex="0">
+                    <div class="tab-pane fade show active" id="profile-tab-pane" role="tabpanel" aria-labelledby="profile-tab" tabindex="0">
                         {% if pegawai %}
                         <!-- Tampilkan pesan jika ada data pegawai -->
                         <div class="pegawai">
@@ -76,81 +66,72 @@
                                 {% if messages %}
                                 {% for message in messages %}
                                 {% if message.tags == 'success' %}
-                                <div class="alert alert-success" role="alert">{{ message }}</div>
+                                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                    {{ message }}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
                                 {% elif message.tags == 'error' %}
-                                <div class="alert alert-danger" role="alert">{{ message }}</div>
+                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                    {{ message }}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
                                 {% else %}
-                                <div class="alert" role="alert">{{ message }}</div>
+                                <div class="alert alert-dismissible fade show" role="alert">
+                                    {{ message }}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
                                 {% endif %}
                                 {% endfor %}
                                 {% endif %}
                                 <div class="form-floating mb-1">
-                                    <input name="nip_pegawai" type="text" class="form-control" id="floatingInputNIP"
-                                        placeholder="Nomor Induk Pegawai" value="{{ pegawai.nip_pegawai }}" required>
+                                    <select name="aktif_pegawai" class="form-select" id="floatingSelectStatusPegawai" aria-label="Pilih Status Pegawai" required>
+                                        <option value="0" {% if pegawai.aktif_pegawai == 0 %}selected{% endif %}>Tidak Aktif</option>
+                                        <option value="1" {% if pegawai.aktif_pegawai == 1 %}selected{% endif %}>Aktif</option>
+                                    </select>
+                                    <label for="floatingSelectStatusPegawai">Status Pegawai</label>
+                                </div>
+                                <div class="form-floating mb-1">
+                                    <input name="nip_pegawai" type="text" class="form-control" id="floatingInputNIP" placeholder="Nomor Induk Pegawai" value="{{ pegawai.nip_pegawai }}" required>
                                     <label for="floatingInputNIP">NIP</label>
                                 </div>
                                 <div class="form-floating mb-1">
-                                    <input name="nama_pegawai" type="text" class="form-control" id="floatingInputNama"
-                                        placeholder="Nama Lengkap" value="{{ pegawai.nama_pegawai }}" required>
+                                    <input name="nama_pegawai" type="text" class="form-control" id="floatingInputNama" placeholder="Nama Lengkap" value="{{ pegawai.nama_pegawai }}" required>
                                     <label for="floatingInputNama">Nama</label>
                                 </div>
                                 <div class="form-floating mb-1">
-                                    <input name="tempat_lahir_pegawai" type="text" class="form-control"
-                                        id="floatingInputTempatLahir" placeholder="Tempat Lahir"
-                                        value="{{ pegawai.tempat_lahir_pegawai }}" required>
+                                    <input name="tempat_lahir_pegawai" type="text" class="form-control" id="floatingInputTempatLahir" placeholder="Tempat Lahir" value="{{ pegawai.tempat_lahir_pegawai }}" required>
                                     <label for="floatingInputTempatLahir">Tempat Lahir</label>
                                 </div>
                                 <div class="form-floating mb-1">
-                                    <input name="tanggal_lahir_pegawai" type="date" class="form-control"
-                                        id="floatingInputTanggalLahir" placeholder="Tanggal Lahir"
-                                        value="{{ pegawai.tanggal_lahir_pegawai }}" required>
+                                    <input name="tanggal_lahir_pegawai" type="date" class="form-control" id="floatingInputTanggalLahir" placeholder="Tanggal Lahir" value="{{ tanggal_lahir_pegawai }}" required>
                                     <label for="floatingInputTanggalLahir">Tanggal Lahir</label>
                                 </div>
                                 <div class="form-floating mb-1">
-                                    <select name="jenis_kelamin_pegawai" class="form-select" id="floatingSelectSex"
-                                        aria-label="Pilih Jenis Kelamin" required>
-                                        {% if pegawai.jenis_kelamin_pegawai == 0 %}
-                                        <option selected>...</option>
-                                        <option selected value="0">Laki-Laki</option>
-                                        <option value="1">Perempuan</option>
-                                        {% elif pegawai.jenis_kelamin_pegawai == 1 %}
-                                        <option selected>...</option>
-                                        <option value="0">Laki-Laki</option>
-                                        <option selected value="1">Perempuan</option>
-                                        {% else %}
-                                        <option selected>...</option>
-                                        <option value="0">Laki-Laki</option>
-                                        <option value="1">Perempuan</option>
-                                        {% endif %}
+                                    <select name="jenis_kelamin_pegawai" class="form-select" id="floatingSelectSex" aria-label="Pilih Jenis Kelamin" required>
+                                        <option value="" {% if not pegawai.jenis_kelamin_pegawai %}selected{% endif %}> ...</option>
+                                        <option value="Laki-Laki" {% if pegawai.jenis_kelamin_pegawai == "Laki-Laki" %}selected{% endif %}>Laki-Laki</option>
+                                        <option value="Perempuan" {% if pegawai.jenis_kelamin_pegawai == "Perempuan" %}selected{% endif %}>Perempuan</option>
                                     </select>
                                     <label for="floatingSelectSex">Jenis Kelamin</label>
                                 </div>
                                 <div class="form-floating mb-1">
-                                    <input name="surel_pegawai" type="email" class="form-control"
-                                        id="floatingInputSurel" placeholder="nama@contoh.com"
-                                        value="{{ pegawai.surel_pegawai }}" required>
+                                    <input name="surel_pegawai" type="email" class="form-control" id="floatingInputSurel" placeholder="nama@contoh.com" value="{{ pegawai.surel_pegawai }}" required>
                                     <label for="floatingInputSurel">Alamat Surel</label>
                                 </div>
                                 <div class="form-floating mb-1">
-                                    <input name="telepon_pegawai" type="text" class="form-control"
-                                        id="floatingInputTelepon" placeholder="Telepon"
-                                        value="{{ pegawai.telepon_pegawai }}" required>
+                                    <input name="telepon_pegawai" type="text" class="form-control" id="floatingInputTelepon" placeholder="Telepon" value="{{ pegawai.telepon_pegawai }}" required>
                                     <label for="floatingInputTelepon">Telepon</label>
                                 </div>
                                 <button type="submit" class="btn btn-primary">Simpan</button>
                             </form>
                         </div>
                     </div>
-                    <div class="tab-pane fade" id="contact-tab-pane" role="tabpanel" aria-labelledby="contact-tab"
-                        tabindex="0">
-                        ...</div>
+                    <div class="tab-pane fade" id="contact-tab-pane" role="tabpanel" aria-labelledby="contact-tab" tabindex="0">...</div>
                 </div>
             </div>
         </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
-        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
 </body>
 
 </html>

@@ -13,6 +13,7 @@ def index(request):
     return render(request, "pegawai/index.html", context)
 
 
+@login_required
 def profile(request):
     # Mendapatkan username user yang sedang login
     username = request.user.username
@@ -20,10 +21,17 @@ def profile(request):
     # Mendapatkan data pegawai dari user yang sedang login
     try:
         pegawai = Pegawai.objects.get(user=request.user)
+        # Ubah format tanggal lahir menjadi "YYYY-MM-DD"
+        tanggal_lahir_pegawai = pegawai.tanggal_lahir_pegawai.strftime("%Y-%m-%d")
     except Pegawai.DoesNotExist:
         pegawai = None
+        tanggal_lahir_pegawai = None
 
-    context = {"username": username, "pegawai": pegawai}
+    context = {
+        "username": username,
+        "pegawai": pegawai,
+        "tanggal_lahir_pegawai": tanggal_lahir_pegawai,
+    }
     return render(request, "pegawai/profile.html", context)
 
 
@@ -44,6 +52,7 @@ def signin(request):
     return render(request, "pegawai/signin.html")
 
 
+@login_required
 def signout(request):
     logout(request)
     return redirect("signin")
@@ -63,6 +72,7 @@ def signup(request):
             else:
                 # Buat user baru
                 User.objects.create_user(username=username, password=password)
+                messages.success(request, "Anda berhasil mendaftar, silahkan login.")
                 return redirect("signin")
             # Ganti 'home' dengan URL halaman setelah sign up
         else:
@@ -76,6 +86,7 @@ def add_pegawai(request):
     user_id = request.user.id
 
     if request.method == "POST":
+        aktif_pegawai = request.POST["aktif_pegawai"]
         nip_pegawai = request.POST["nip_pegawai"]
         nama_pegawai = request.POST["nama_pegawai"]
         tempat_lahir_pegawai = request.POST["tempat_lahir_pegawai"]
@@ -88,6 +99,7 @@ def add_pegawai(request):
         try:
             pegawai = Pegawai.objects.get(user_id=user_id)
             # Update data pegawai
+            pegawai.aktif_pegawai = aktif_pegawai
             pegawai.nip_pegawai = nip_pegawai
             pegawai.nama_pegawai = nama_pegawai
             pegawai.tempat_lahir_pegawai = tempat_lahir_pegawai
@@ -100,6 +112,7 @@ def add_pegawai(request):
         except Pegawai.DoesNotExist:
             # Buat pegawai baru
             Pegawai.objects.create(
+                aktif_pegawai=aktif_pegawai,
                 nip_pegawai=nip_pegawai,
                 nama_pegawai=nama_pegawai,
                 tempat_lahir_pegawai=tempat_lahir_pegawai,

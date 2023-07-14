@@ -9,11 +9,19 @@ class Pegawai(models.Model):
     nama_pegawai = models.CharField(blank=False, max_length=200)
     tempat_lahir_pegawai = models.CharField(blank=False, max_length=200)
     tanggal_lahir_pegawai = models.DateField(blank=False)
-    jenis_kelamin_pegawai = models.BooleanField(blank=False)
+
+    class JenisKelamin(models.TextChoices):
+        MALE = "Laki-Laki", _("Laki-Laki")
+        FEMALE = "Perempuan", _("Perempuan")
+
+    jenis_kelamin_pegawai = models.CharField(
+        blank=False, max_length=200, choices=JenisKelamin.choices
+    )
     surel_pegawai = models.EmailField(blank=False, max_length=200)
     telepon_pegawai = models.CharField(blank=False, max_length=200)
+    aktif_pegawai = models.BooleanField(blank=False, default=True)
     user = models.OneToOneField(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=False
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=False, default=None
     )
 
 
@@ -90,7 +98,9 @@ class Jabatan(models.Model):
     tanggal_sk_jabatan = models.DateField(blank=False)
     tmt_jabatan = models.CharField(blank=False, max_length=200)
     file_sk_jabatan = models.FileField(upload_to=pegawai_jalur_direktori)
-    pegawai = models.ForeignKey(Pegawai, on_delete=models.CASCADE)
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=False, default=None
+    )
 
 
 class Pendidikan(models.Model):
@@ -122,7 +132,9 @@ class Pendidikan(models.Model):
     nomor_seri_ijazah_pendidikan = models.CharField(blank=False, max_length=200)
     tanggal_terbit_ijazah_pendidikan = models.DateField(blank=False)
     file_ijazah_pendidikan = models.FileField(upload_to=pegawai_jalur_direktori)
-    pegawai = models.ForeignKey(Pegawai, on_delete=models.CASCADE)
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=False, default=None
+    )
 
 
 class Pangkat(models.Model):
@@ -157,7 +169,9 @@ class Pangkat(models.Model):
     tanggal_sk_pangkat = models.DateField(blank=False)
     tmt_pangkat = models.CharField(blank=False, max_length=200)
     file_sk_pangkat = models.FileField(upload_to=pegawai_jalur_direktori)
-    pegawai = models.ForeignKey(Pegawai, on_delete=models.CASCADE)
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=False, default=None
+    )
 
 
 class Diklat(models.Model):
@@ -168,7 +182,9 @@ class Diklat(models.Model):
     nomor_sertifikat_diklat = models.CharField(blank=False, max_length=200)
     tanggal_sertifikat_diklat = models.DateField(blank=False)
     file_sertifikat_diklat = models.FileField(upload_to=pegawai_jalur_direktori)
-    pegawai = models.ForeignKey(Pegawai, on_delete=models.CASCADE)
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=False, default=None
+    )
 
 
 class AngkaKredit(models.Model):
@@ -176,6 +192,15 @@ class AngkaKredit(models.Model):
     nomor_pak = models.CharField(blank=False, max_length=200)
     tanggal_pak = models.DateField(blank=False)
     nilai_pak = models.IntegerField(blank=False)
-    masa_penilaian_pak = models.BooleanField(blank=False)
+
+    class MasaPenilaian(models.TextChoices):
+        SEM1 = "Semester Ganjil", _("Semester Ganjil")
+        SEM2 = "Semester Genap", _("Semester Genap")
+
+    masa_penilaian_pak = models.CharField(
+        blank=False, max_length=200, choices=MasaPenilaian.choices
+    )
     file_pak = models.FileField(upload_to=pegawai_jalur_direktori)
-    pegawai = models.ForeignKey(Pegawai, on_delete=models.CASCADE)
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=False, default=None
+    )

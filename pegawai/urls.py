@@ -9,4 +9,7 @@ urlpatterns = [
     path("signout/", views.signout, name="signout"),
     path("profil/", views.profile, name="profile"),
     path("add_pegawai/", login_required(views.add_pegawai), name="add_pegawai"),
+    path(
+        "add_pendidikan/", login_required(views.add_pendidikan), name="add_pendidikan"
+    ),
 ]

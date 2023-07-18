@@ -6,6 +6,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>SiGawai | Profil</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.css" />
+    <style>
+        /* Ganti ukuran ikon profil */
+        .profile-icon {
+            font-size: 100px;
+            /* Atur ukuran sesuai keinginan Anda */
+        }
+    </style>
 </head>
 
 <body>
@@ -53,81 +62,188 @@
         {% endif %}
         {% endfor %}
         {% endif %}
-        <div class="card">
-            <div class="card-header">
-                <ul class="nav nav-tabs" id="myTab" role="tablist">
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link active" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile-tab-pane" type="button" role="tab" aria-controls="profile-tab-pane" aria-selected="false">Profile</button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="pendidikan-tab" data-bs-toggle="tab" data-bs-target="#pendidikan-tab-pane" type="button" role="tab" aria-controls="pendidikan-tab-pane" aria-selected="false">Pendidikan</button>
-                    </li>
-                </ul>
-            </div>
-            <div class="card-body">
-                <div class="tab-content" id="myTabContent">
-                    <div class="tab-pane fade show active" id="profile-tab-pane" role="tabpanel" aria-labelledby="profile-tab" tabindex="0">
+        <div class="row">
+            <div class="col-sm-4">
+                <div class="card text-center">
+                    <div class="card-body">
                         <!-- Tampilkan pesan jika data pendidikan ada dan File Ijazah Pendidikan sudah diunggah -->
-                        {% if pegawai %}
-                        <div class="alert alert-success alert-dismissible fade show" role="alert">
-                            Data Profil Anda sudah lengkap!
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                        {% else %}
+                        {% if not pegawai %}
                         <div class="alert alert-danger alert-dismissible fade show" role="alert">
                             Data Profil Anda belum lengkap! Silahkan melengkapi Data Profil Anda!
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
                         {% endif %}
                         <!-- Tampilkan data pegawai -->
-                        <div class="pegawai">
-                            <h2>Data Pegawai</h2>
-                            <form method="post" action="{% url 'add_pegawai' %}">
-                                {% csrf_token %}
-                                <div class="form-floating mb-1" hidden>
-                                    <select name="aktif_pegawai" class="form-select" id="floatingSelectStatusPegawai" aria-label="Pilih Status Pegawai" required>
-                                        <option value="0">Tidak Aktif</option>
-                                        <option value="1" selected>Aktif</option>
-                                    </select>
-                                    <label for="floatingSelectStatusPegawai">Status Pegawai</label>
+                        <div class="container-fluid">
+                            <!-- Button trigger modal edit profil -->
+                            <div class="container-fluid text-end">
+                                <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#editProfil">
+                                    <i class="bi bi-pencil-square"></i>
+                                </button>
+                            </div>
+                            <!-- Modal edit profil -->
+                            <div class="modal fade" id="editProfil" tabindex="-1" aria-labelledby="editProfilLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                                    <div class="modal-content">
+                                        <form method="post" action="{% url 'add_pegawai' %}">
+                                            {% csrf_token %}
+                                            <div class="modal-header">
+                                                <h1 class="modal-title fs-5" id="editProfilLabel">Edit Profil</h1>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <!-- Tampilkan data pegawai -->
+                                                <div class="pegawai">
+                                                    {% if pegawai %}
+                                                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                                        Data Profil Anda sudah lengkap!
+                                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                                    </div>
+                                                    {% else %}
+                                                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                                        Data Profil Anda belum lengkap! Silahkan melengkapi Data Profil Anda!
+                                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                                    </div>
+                                                    {% endif %}
+                                                    <div class="form-floating mb-1" hidden>
+                                                        <select name="aktif_pegawai" class="form-select" id="floatingSelectStatusPegawai" aria-label="Pilih Status Pegawai" required>
+                                                            <option value="0">Tidak Aktif</option>
+                                                            <option value="1" selected>Aktif</option>
+                                                        </select>
+                                                        <label for="floatingSelectStatusPegawai">Status Pegawai</label>
+                                                    </div>
+                                                    <div class="form-floating mb-1">
+                                                        <input name="nip_pegawai" type="text" class="form-control" id="floatingInputNIP" placeholder="Nomor Induk Pegawai" value="{{ pegawai.nip_pegawai }}" required>
+                                                        <label for="floatingInputNIP">NIP</label>
+                                                    </div>
+                                                    <div class="form-floating mb-1">
+                                                        <input name="nama_pegawai" type="text" class="form-control" id="floatingInputNama" placeholder="Nama Lengkap" value="{{ pegawai.nama_pegawai }}" required>
+                                                        <label for="floatingInputNama">Nama</label>
+                                                    </div>
+                                                    <div class="form-floating mb-1">
+                                                        <input name="tempat_lahir_pegawai" type="text" class="form-control" id="floatingInputTempatLahir" placeholder="Tempat Lahir" value="{{ pegawai.tempat_lahir_pegawai }}" required>
+                                                        <label for="floatingInputTempatLahir">Tempat Lahir</label>
+                                                    </div>
+                                                    <div class="form-floating mb-1">
+                                                        <input name="tanggal_lahir_pegawai" type="date" class="form-control" id="floatingInputTanggalLahir" placeholder="Tanggal Lahir" value="{{ tanggal_lahir_pegawai }}" required>
+                                                        <label for="floatingInputTanggalLahir">Tanggal Lahir</label>
+                                                    </div>
+                                                    <div class="form-floating mb-1">
+                                                        <select name="jenis_kelamin_pegawai" class="form-select" id="floatingSelectSex" aria-label="Pilih Jenis Kelamin" required>
+                                                            <option value="" {% if not pegawai.jenis_kelamin_pegawai %}selected{% endif %}> ...</option>
+                                                            <option value="Laki-Laki" {% if pegawai.jenis_kelamin_pegawai == "Laki-Laki" %}selected{% endif %}>Laki-Laki</option>
+                                                            <option value="Perempuan" {% if pegawai.jenis_kelamin_pegawai == "Perempuan" %}selected{% endif %}>Perempuan</option>
+                                                        </select>
+                                                        <label for="floatingSelectSex">Jenis Kelamin</label>
+                                                    </div>
+                                                    <div class="form-floating mb-1">
+                                                        <input name="surel_pegawai" type="email" class="form-control" id="floatingInputSurel" placeholder="nama@contoh.com" value="{{ pegawai.surel_pegawai }}" required>
+                                                        <label for="floatingInputSurel">Alamat Surel</label>
+                                                    </div>
+                                                    <div class="form-floating mb-1">
+                                                        <input name="telepon_pegawai" type="text" class="form-control" id="floatingInputTelepon" placeholder="Telepon" value="{{ pegawai.telepon_pegawai }}" required>
+                                                        <label for="floatingInputTelepon">Telepon</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                                                <button type="submit" class="btn btn-primary">Simpan</button>
+                                            </div>
+                                        </form>
+                                    </div>
                                 </div>
-                                <div class="form-floating mb-1">
-                                    <input name="nip_pegawai" type="text" class="form-control" id="floatingInputNIP" placeholder="Nomor Induk Pegawai" value="{{ pegawai.nip_pegawai }}" required>
-                                    <label for="floatingInputNIP">NIP</label>
-                                </div>
-                                <div class="form-floating mb-1">
-                                    <input name="nama_pegawai" type="text" class="form-control" id="floatingInputNama" placeholder="Nama Lengkap" value="{{ pegawai.nama_pegawai }}" required>
-                                    <label for="floatingInputNama">Nama</label>
-                                </div>
-                                <div class="form-floating mb-1">
-                                    <input name="tempat_lahir_pegawai" type="text" class="form-control" id="floatingInputTempatLahir" placeholder="Tempat Lahir" value="{{ pegawai.tempat_lahir_pegawai }}" required>
-                                    <label for="floatingInputTempatLahir">Tempat Lahir</label>
-                                </div>
-                                <div class="form-floating mb-1">
-                                    <input name="tanggal_lahir_pegawai" type="date" class="form-control" id="floatingInputTanggalLahir" placeholder="Tanggal Lahir" value="{{ tanggal_lahir_pegawai }}" required>
-                                    <label for="floatingInputTanggalLahir">Tanggal Lahir</label>
-                                </div>
-                                <div class="form-floating mb-1">
-                                    <select name="jenis_kelamin_pegawai" class="form-select" id="floatingSelectSex" aria-label="Pilih Jenis Kelamin" required>
-                                        <option value="" {% if not pegawai.jenis_kelamin_pegawai %}selected{% endif %}> ...</option>
-                                        <option value="Laki-Laki" {% if pegawai.jenis_kelamin_pegawai == "Laki-Laki" %}selected{% endif %}>Laki-Laki</option>
-                                        <option value="Perempuan" {% if pegawai.jenis_kelamin_pegawai == "Perempuan" %}selected{% endif %}>Perempuan</option>
-                                    </select>
-                                    <label for="floatingSelectSex">Jenis Kelamin</label>
-                                </div>
-                                <div class="form-floating mb-1">
-                                    <input name="surel_pegawai" type="email" class="form-control" id="floatingInputSurel" placeholder="nama@contoh.com" value="{{ pegawai.surel_pegawai }}" required>
-                                    <label for="floatingInputSurel">Alamat Surel</label>
-                                </div>
-                                <div class="form-floating mb-1">
-                                    <input name="telepon_pegawai" type="text" class="form-control" id="floatingInputTelepon" placeholder="Telepon" value="{{ pegawai.telepon_pegawai }}" required>
-                                    <label for="floatingInputTelepon">Telepon</label>
-                                </div>
-                                <button type="submit" class="btn btn-primary">Simpan</button>
-                            </form>
+                            </div>
+                        </div>
+                        <i class="bi bi-file-person profile-icon"></i>
+                        <h4 class="card-title">{{ pegawai.nama_pegawai }}</h4>
+                        <p class="card-text text-body-tertiary">NIP. {{ pegawai.nip_pegawai }}</p>
+                        <div class="container text-start">
+                            <div class="row border-bottom mb-3">
+                                {% if pegawai.aktif_pegawai %}
+                                <h5>
+                                    <i class="bi bi-person-check"></i>
+                                    Status Pegawai
+                                </h5>
+                                <p class="card-text text-body-tertiary fs-6 fw-lighter">Aktif</p>
+                                {% else %}
+                                <h5>
+                                    <i class="bi bi-person-dash"></i>
+                                    Status Pegawai
+                                </h5>
+                                <p class="card-text text-body-tertiary fs-6 fw-lighter">Tidak Aktif</p>
+                                {% endif %}
+                            </div>
+                            <div class="row border-bottom mb-3">
+                                <h5>
+                                    <i class="bi bi-bookmark-star"></i>
+                                    Pangkat & Golongan
+                                </h5>
+                                <p class="card-text text-body-tertiary fs-6 fw-lighter">Belum Ada</p>
+                            </div>
+                            <div class="row border-bottom mb-3">
+                                <h5>
+                                    <i class="bi bi-briefcase"></i>
+                                    Jabatan
+                                </h5>
+                                <p class="card-text text-body-tertiary fs-6 fw-lighter">Belum Ada</p>
+                            </div>
                         </div>
                     </div>
-                    <div class="tab-pane fade" id="pendidikan-tab-pane" role="tabpanel" aria-labelledby="pendidikan-tab" tabindex="0">
+                </div>
+            </div>
+            <div class="col-sm-8">
+                <div class="card">
+                    <div class="card-header">
+                        <ul class="nav nav-tabs card-header-tabs">
+                            <li class="nav-item">
+                                <a class="nav-link active" aria-current="true" href="#">Riwayat Pendidikan</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">Special title treatment</h5>
+                        <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+                        <table id="tabelPendidikan" class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Tingkat Pendidikan</th>
+                                    <th scope="col">Lembaga Pendidikan</th>
+                                    <th scope="col">Jurusan Pendidikan</th>
+                                    <th scope="col">Tanggal Terbit Ijazah</th>
+                                    <th scope="col">File Ijazah</th>
+                                    <th scope="col">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody class="table-group-divider">
+                                <tr>
+                                    <th scope="row">1</th>
+                                    <td>Mark</td>
+                                    <td>Otto</td>
+                                    <td>@mdo</td>
+                                    <td>@mdo</td>
+                                    <td>@mdo</td>
+                                    <td>@mdo</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <ul class="nav nav-tabs" id="myTab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="pendidikan-tab" data-bs-toggle="tab" data-bs-target="#pendidikan-tab-pane" type="button" role="tab" aria-controls="pendidikan-tab-pane" aria-selected="false">Pendidikan</button>
+                    </li>
+                </ul>
+            </div>
+            <div class="card-body">
+                <div class="tab-content" id="myTabContent">
+                    <div class="tab-pane fade show active" id="pendidikan-tab-pane" role="tabpanel" aria-labelledby="pendidikan-tab" tabindex="0">
                         <!-- Tampilkan pesan jika data pendidikan ada dan File Ijazah Pendidikan sudah diunggah -->
                         {% if pendidikan %}
                         <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -142,75 +258,164 @@
                         {% endif %}
                         <!-- Tampilkan data pendidikan -->
                         <div class="pendidikan">
-                            <h2>Data Pendidikan</h2>
+                            <h2>Riwayat Pendidikan</h2>
+                            {% if pendidikan %}
+                            <div class="accordion mb-3" id="accordionDataPendidikan">
+                                {% for pend in pendidikan %}
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header">
+                                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ forloop.counter }}" aria-expanded="true" aria-controls="collapse{{ forloop.counter }}">
+                                            Riwayat Pendidikan {{ forloop.counter }}
+                                        </button>
+                                    </h2>
+                                    <div id="collapse{{ forloop.counter }}" class="accordion-collapse collapse" data-bs-parent="#accordionDataPendidikan">
+                                        <div class="accordion-body">
+                                            <form method="post" action="{% url 'edit_pendidikan' pend.id_pendidikan %}" enctype="multipart/form-data">
+                                                {% csrf_token %}
+                                                <div class="form-floating mb-1">
+                                                    <select name="tingkat_pendidikan" class="form-select" id="floatingSelectTingkatPendidikan" aria-label="Pilih Tingkat Pendidikan" required>
+                                                        {% for pilihan in pilihan_tingkat_pendidikan %}
+                                                            <option value="{{ pilihan.0 }}" {% if pend and pend.tingkat_pendidikan == pilihan.0 %}selected{% endif %}>{{ pilihan.1 }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                    <label for="floatingSelectTingkatPendidikan">Tingkat Pendidikan</label>
+                                                </div>
+                                                <div class="form-floating mb-1">
+                                                    <input name="lembaga_pendidikan" type="text" class="form-control" id="floatingLembagaPendidikan" placeholder="Lembaga Pendidikan" value="{{ pend.lembaga_pendidikan }}" required>
+                                                    <label for="floatingLembagaPendidikan">Lembaga Pendidikan</label>
+                                                </div>
+                                                <div class="form-floating mb-1">
+                                                    <input name="fakultas_pendidikan" type="text" class="form-control" id="floatingFakultasPendidikan" placeholder="Fakultas Pendidikan" value="{{ pend.fakultas_pendidikan }}">
+                                                    <label for="floatingFakultasPendidikan">Fakultas Pendidikan</label>
+                                                </div>
+                                                <div class="form-floating mb-1">
+                                                    <input name="jurusan_pendidikan" type="text" class="form-control" id="floatingJurusanPendidikan" placeholder="Jurusan Pendidikan" value="{{ pend.jurusan_pendidikan }}">
+                                                    <label for="floatingJurusanPendidikan">Jurusan Pendidikan</label>
+                                                </div>
+                                                <div class="form-floating mb-1">
+                                                    <input name="gelar_depan_pendidikan" type="text" class="form-control" id="floatingGelarDepanPendidikan" placeholder="Gelar Depan Pendidikan" value="{{ pend.gelar_depan_pendidikan }}">
+                                                    <label for="floatingGelarDepanPendidikan">Gelar Depan Pendidikan</label>
+                                                </div>
+                                                <div class="form-floating mb-1">
+                                                    <input name="gelar_belakang_pendidikan" type="text" class="form-control" id="floatingGelarBelakangPendidikan" placeholder="Gelar Belakang Pendidikan" value="{{ pend.gelar_belakang_pendidikan }}">
+                                                    <label for="floatingGelarBelakangPendidikan">Gelar Belakang Pendidikan</label>
+                                                </div>
+                                                <div class="form-floating mb-1">
+                                                    <input name="nomor_seri_ijazah_pendidikan" type="text" class="form-control" id="floatingNomorSeriIjazahPendidikan" placeholder="Nomor Seri Ijazah Pendidikan" value="{{ pend.nomor_seri_ijazah_pendidikan }}" required>
+                                                    <label for="floatingNomorSeriIjazahPendidikan">Nomor Seri Ijazah Pendidikan</label>
+                                                </div>
+                                                <div class="form-floating mb-1">
+                                                    <input name="tanggal_terbit_ijazah_pendidikan" type="date" class="form-control" id="floatingTanggalTerbitIjazahPendidikan" placeholder="Tanggal Terbit Ijazah Pendidikan" value="{{ pend.tanggal_terbit_ijazah_pendidikan }}" required>
+                                                    <label for="floatingTanggalTerbitIjazahPendidikan">Tanggal Terbit Ijazah Pendidikan</label>
+                                                </div>
+                                                <div class="form-floating mb-1">
+                                                    <input name="file_ijazah_pendidikan" type="file" class="form-control" id="floatingFileIjazahPendidikan" required>
+                                                    <label for="floatingFileIjazahPendidikan">File Ijazah Pendidikan</label>
+                                                </div>
+                                                <!-- Tampilkan pesan jika data pendidikan ada dan File Ijazah Pendidikan sudah diunggah -->
+                                                {% if pend %}
+                                                {% if pend.file_ijazah_pendidikan %}
+                                                {% if file_exists_pendidikan %}
+                                                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                                    File Ijazah Pendidikan sudah diunggah.
+                                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                                </div>
+                                                {% else %}
+                                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                                    File Ijazah Pendidikan belum diunggah. Silahkan unggah File Ijazah Pendidikan.
+                                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                                </div>
+                                                {% endif %}
+                                                {% else %}
+                                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                                    File Ijazah Pendidikan belum diunggah. Silahkan unggah File Ijazah Pendidikan.
+                                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                                </div>
+                                                {% endif %}
+                                                {% else %}
+                                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                                    File Ijazah Pendidikan belum diunggah. Silahkan unggah File Ijazah Pendidikan.
+                                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                                </div>
+                                                {% endif %}
+                                                <div class="d-grid gap-2">
+                                                    <button type="submit" class="btn btn-primary">Simpan</button>
+                                                    <!-- Button trigger modal -->
+                                                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalHapusDataPendidikan">
+                                                        Hapus
+                                                    </button>
+                                                </div>
+                                            </form>
+                                            <form action="{% url 'delete_pendidikan' pend.id_pendidikan %}" method="post">
+                                                {% csrf_token %}
+                                                <!-- Modal -->
+                                                <div class="modal fade" id="modalHapusDataPendidikan" tabindex="-1" aria-labelledby="modalHapusDataPendidikanLabel" aria-hidden="true">
+                                                    <div class="modal-dialog">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h1 class="modal-title fs-5" id="modalHapusDataPendidikanLabel">Modal title</h1>
+                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                Apakah Anda yakin menghapus Data Pendidikan ini?
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                                                <button type="submit" class="btn btn-danger">Hapus</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                            <h2>Input Data Pendidikan</h2>
                             <form method="post" action="{% url 'add_pendidikan' %}" enctype="multipart/form-data">
                                 {% csrf_token %}
                                 <div class="form-floating mb-1">
                                     <select name="tingkat_pendidikan" class="form-select" id="floatingSelectTingkatPendidikan" aria-label="Pilih Tingkat Pendidikan" required>
                                         {% for pilihan in pilihan_tingkat_pendidikan %}
-                                            <option value="{{ pilihan.0 }}" {% if pendidikan and pendidikan.tingkat_pendidikan == pilihan.0 %}selected{% endif %}>{{ pilihan.1 }}</option>
+                                            <option value="{{ pilihan.0 }}">{{ pilihan.1 }}</option>
                                         {% endfor %}
                                     </select>
                                     <label for="floatingSelectTingkatPendidikan">Tingkat Pendidikan</label>
                                 </div>
                                 <div class="form-floating mb-1">
-                                    <input name="lembaga_pendidikan" type="text" class="form-control" id="floatingLembagaPendidikan" placeholder="Lembaga Pendidikan" value="{{ pendidikan.lembaga_pendidikan }}" required>
+                                    <input name="lembaga_pendidikan" type="text" class="form-control" id="floatingLembagaPendidikan" placeholder="Lembaga Pendidikan" required>
                                     <label for="floatingLembagaPendidikan">Lembaga Pendidikan</label>
                                 </div>
                                 <div class="form-floating mb-1">
-                                    <input name="fakultas_pendidikan" type="text" class="form-control" id="floatingFakultasPendidikan" placeholder="Fakultas Pendidikan" value="{{ pendidikan.fakultas_pendidikan }}">
+                                    <input name="fakultas_pendidikan" type="text" class="form-control" id="floatingFakultasPendidikan" placeholder="Fakultas Pendidikan">
                                     <label for="floatingFakultasPendidikan">Fakultas Pendidikan</label>
                                 </div>
                                 <div class="form-floating mb-1">
-                                    <input name="jurusan_pendidikan" type="text" class="form-control" id="floatingJurusanPendidikan" placeholder="Jurusan Pendidikan" value="{{ pendidikan.jurusan_pendidikan }}">
+                                    <input name="jurusan_pendidikan" type="text" class="form-control" id="floatingJurusanPendidikan" placeholder="Jurusan Pendidikan">
                                     <label for="floatingJurusanPendidikan">Jurusan Pendidikan</label>
                                 </div>
                                 <div class="form-floating mb-1">
-                                    <input name="gelar_depan_pendidikan" type="text" class="form-control" id="floatingGelarDepanPendidikan" placeholder="Gelar Depan Pendidikan" value="{{ pendidikan.gelar_depan_pendidikan }}">
+                                    <input name="gelar_depan_pendidikan" type="text" class="form-control" id="floatingGelarDepanPendidikan" placeholder="Gelar Depan Pendidikan">
                                     <label for="floatingGelarDepanPendidikan">Gelar Depan Pendidikan</label>
                                 </div>
                                 <div class="form-floating mb-1">
-                                    <input name="gelar_belakang_pendidikan" type="text" class="form-control" id="floatingGelarBelakangPendidikan" placeholder="Gelar Belakang Pendidikan" value="{{ pendidikan.gelar_belakang_pendidikan }}">
+                                    <input name="gelar_belakang_pendidikan" type="text" class="form-control" id="floatingGelarBelakangPendidikan" placeholder="Gelar Belakang Pendidikan">
                                     <label for="floatingGelarBelakangPendidikan">Gelar Belakang Pendidikan</label>
                                 </div>
                                 <div class="form-floating mb-1">
-                                    <input name="nomor_seri_ijazah_pendidikan" type="text" class="form-control" id="floatingNomorSeriIjazahPendidikan" placeholder="Nomor Seri Ijazah Pendidikan" value="{{ pendidikan.nomor_seri_ijazah_pendidikan }}" required>
+                                    <input name="nomor_seri_ijazah_pendidikan" type="text" class="form-control" id="floatingNomorSeriIjazahPendidikan" placeholder="Nomor Seri Ijazah Pendidikan" required>
                                     <label for="floatingNomorSeriIjazahPendidikan">Nomor Seri Ijazah Pendidikan</label>
                                 </div>
                                 <div class="form-floating mb-1">
-                                    <input name="tanggal_terbit_ijazah_pendidikan" type="date" class="form-control" id="floatingTanggalTerbitIjazahPendidikan" placeholder="Tanggal Terbit Ijazah Pendidikan" value="{{ tanggal_terbit_ijazah_pendidikan }}" required>
+                                    <input name="tanggal_terbit_ijazah_pendidikan" type="date" class="form-control" id="floatingTanggalTerbitIjazahPendidikan" placeholder="Tanggal Terbit Ijazah Pendidikan" required>
                                     <label for="floatingTanggalTerbitIjazahPendidikan">Tanggal Terbit Ijazah Pendidikan</label>
                                 </div>
                                 <div class="form-floating mb-1">
                                     <input name="file_ijazah_pendidikan" type="file" class="form-control" id="floatingFileIjazahPendidikan" required>
                                     <label for="floatingFileIjazahPendidikan">File Ijazah Pendidikan</label>
                                 </div>
-                                <!-- Tampilkan pesan jika data pendidikan ada dan File Ijazah Pendidikan sudah diunggah -->
-                                {% if pendidikan %}
-                                {% if pendidikan.file_ijazah_pendidikan %}
-                                {% if file_exists_pendidikan %}
-                                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                                    File Ijazah Pendidikan sudah diunggah.
-                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                                </div>
-                                {% else %}
-                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                    File Ijazah Pendidikan belum diunggah. Silahkan unggah File Ijazah Pendidikan.
-                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                                </div>
-                                {% endif %}
-                                {% else %}
-                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                    File Ijazah Pendidikan belum diunggah. Silahkan unggah File Ijazah Pendidikan.
-                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                                </div>
-                                {% endif %}
-                                {% else %}
-                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                    File Ijazah Pendidikan belum diunggah. Silahkan unggah File Ijazah Pendidikan.
-                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                                </div>
-                                {% endif %}
                                 <button type="submit" class="btn btn-primary">Simpan</button>
                             </form>
                         </div>
@@ -220,6 +425,11 @@
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.js"></script>
+    <script>
+        new DataTable('#tabelPendidikan');
+    </script>
 </body>
 
 </html>

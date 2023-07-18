@@ -12,4 +12,14 @@ urlpatterns = [
     path(
         "add_pendidikan/", login_required(views.add_pendidikan), name="add_pendidikan"
     ),
+    path(
+        "edit_pendidikan/<int:id_pendidikan>/",
+        login_required(views.edit_pendidikan),
+        name="edit_pendidikan",
+    ),
+    path(
+        "delete_pendidikan/<int:id_pendidikan>/",
+        login_required(views.delete_pendidikan),
+        name="delete_pendidikan",
+    ),
 ]

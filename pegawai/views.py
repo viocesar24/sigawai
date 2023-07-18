@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
@@ -34,22 +34,27 @@ def profile(request):
     # Mendapatkan data pendidikan dari user yang sedang login
     try:
         # Mengambil data tabel pendidikan
-        pendidikan = Pendidikan.objects.get(user=request.user)
-        # Ubah format tanggal terbit ijazah pendidikan menjadi "YYYY/MM/DD"
-        tanggal_terbit_ijazah_pendidikan = (
-            pendidikan.tanggal_terbit_ijazah_pendidikan.strftime("%Y-%m-%d")
-        )
+        pendidikan = Pendidikan.objects.filter(user=request.user)
     except Pendidikan.DoesNotExist:
         # Jika data tabel pendidikan tidak ada maka return Null/None
         pendidikan = None
-        tanggal_terbit_ijazah_pendidikan = None
 
-    if pendidikan and pendidikan.file_ijazah_pendidikan:
-        file_exists_pendidikan = default_storage.exists(
-            pendidikan.file_ijazah_pendidikan.name
-        )
-    else:
-        file_exists_pendidikan = False
+    # Inisialisasi file_exists_pendidikan sebagai False
+    file_exists_pendidikan = False
+
+    if pendidikan.exists():
+        # Ubah format tanggal terbit ijazah pendidikan menjadi "YYYY/MM/DD"
+        for pend in pendidikan:
+            pend.tanggal_terbit_ijazah_pendidikan = (
+                pend.tanggal_terbit_ijazah_pendidikan.strftime("%Y-%m-%d")
+            )
+            if pend and pend.file_ijazah_pendidikan:
+                file_exists_pendidikan = default_storage.exists(
+                    pend.file_ijazah_pendidikan.name
+                )
+            else:
+                # Keluar dari loop jika file_exists_pendidikan telah ditemukan
+                break
 
     # Mengambil data pilihan tingkat pendidikan
     pilihan_tingkat_pendidikan = Pendidikan.TingkatPendidikan.choices
@@ -58,7 +63,6 @@ def profile(request):
         "pegawai": pegawai,
         "tanggal_lahir_pegawai": tanggal_lahir_pegawai,
         "pendidikan": pendidikan,
-        "tanggal_terbit_ijazah_pendidikan": tanggal_terbit_ijazah_pendidikan,
         "pilihan_tingkat_pendidikan": pilihan_tingkat_pendidikan,
         "file_exists_pendidikan": file_exists_pendidikan,
     }
@@ -175,22 +179,78 @@ def add_pendidikan(request):
             "tanggal_terbit_ijazah_pendidikan"
         ]
         file_ijazah_pendidikan = request.FILES["file_ijazah_pendidikan"]
+
         # Dapatkan username dari pengguna yang saat ini masuk
         username = request.user.username
         # Ubah nama file yang akan diunggah
         new_file_name = f"{username}_pendidikan_{tingkat_pendidikan}{file_ijazah_pendidikan.name[file_ijazah_pendidikan.name.rfind('.'):]}"
         fs = FileSystemStorage()
 
-        # Cek apakah sudah ada pendidikan dengan user_id yang sama
         try:
-            pendidikan = Pendidikan.objects.get(user_id=user_id)
+            Pendidikan.objects.get(
+                tingkat_pendidikan=tingkat_pendidikan,
+                nomor_seri_ijazah_pendidikan=nomor_seri_ijazah_pendidikan,
+                user_id=user_id,
+            )
+            messages.warning(
+                request,
+                "Data Pendidikan sudah ada. Tolong gunakan fungsi edit.",
+            )
+            return redirect("profile")
+        except Pendidikan.DoesNotExist:
+            Pendidikan.objects.create(
+                tingkat_pendidikan=tingkat_pendidikan,
+                lembaga_pendidikan=lembaga_pendidikan,
+                fakultas_pendidikan=fakultas_pendidikan,
+                jurusan_pendidikan=jurusan_pendidikan,
+                gelar_depan_pendidikan=gelar_depan_pendidikan,
+                gelar_belakang_pendidikan=gelar_belakang_pendidikan,
+                nomor_seri_ijazah_pendidikan=nomor_seri_ijazah_pendidikan,
+                tanggal_terbit_ijazah_pendidikan=tanggal_terbit_ijazah_pendidikan,
+                file_ijazah_pendidikan=fs.save(
+                    f"media/pendidikan/{new_file_name}", file_ijazah_pendidikan
+                ),
+                user_id=user_id,
+            )
+            messages.success(request, "Data Pendidikan berhasil dibuat.")
+            return redirect("profile")
+
+    return render(request, "pegawai/profile.html")
+
+
+@login_required
+def edit_pendidikan(request, id_pendidikan):
+    user_id = request.user.id
+
+    if request.method == "POST" and request.FILES["file_ijazah_pendidikan"]:
+        tingkat_pendidikan = request.POST["tingkat_pendidikan"]
+        lembaga_pendidikan = request.POST["lembaga_pendidikan"]
+        fakultas_pendidikan = request.POST["fakultas_pendidikan"]
+        jurusan_pendidikan = request.POST["jurusan_pendidikan"]
+        gelar_depan_pendidikan = request.POST["gelar_depan_pendidikan"]
+        gelar_belakang_pendidikan = request.POST["gelar_belakang_pendidikan"]
+        nomor_seri_ijazah_pendidikan = request.POST["nomor_seri_ijazah_pendidikan"]
+        tanggal_terbit_ijazah_pendidikan = request.POST[
+            "tanggal_terbit_ijazah_pendidikan"
+        ]
+        file_ijazah_pendidikan = request.FILES["file_ijazah_pendidikan"]
+
+        # Dapatkan username dari pengguna yang saat ini masuk
+        username = request.user.username
+        # Ubah nama file yang akan diunggah
+        new_file_name = f"{username}_pendidikan_{tingkat_pendidikan}{file_ijazah_pendidikan.name[file_ijazah_pendidikan.name.rfind('.'):]}"
+        fs = FileSystemStorage()
+
+        try:
+            pendidikan = get_object_or_404(
+                Pendidikan, id_pendidikan=id_pendidikan, user=user_id
+            )
             # Hapus file dan data pendidikan sebelumnya
             if pendidikan.file_ijazah_pendidikan:
                 old_file_path = pendidikan.file_ijazah_pendidikan.path
                 if os.path.exists(old_file_path):
                     os.remove(old_file_path)
-            pendidikan.delete()
-            pendidikan = Pendidikan.objects.get(user_id=user_id)
+
             # Update data pendidikan
             pendidikan.tingkat_pendidikan = tingkat_pendidikan
             pendidikan.lembaga_pendidikan = lembaga_pendidikan
@@ -206,25 +266,32 @@ def add_pendidikan(request):
                 f"media/pendidikan/{new_file_name}", file_ijazah_pendidikan
             )
             pendidikan.save()
-            messages.success(request, "Data pendidikan berhasil diperbarui.")
+            messages.success(request, "Data Pendidikan berhasil diubah.")
         except Pendidikan.DoesNotExist:
-            # Buat pendidikan baru
-            Pendidikan.objects.create(
-                tingkat_pendidikan=tingkat_pendidikan,
-                lembaga_pendidikan=lembaga_pendidikan,
-                fakultas_pendidikan=fakultas_pendidikan,
-                jurusan_pendidikan=jurusan_pendidikan,
-                gelar_depan_pendidikan=gelar_depan_pendidikan,
-                gelar_belakang_pendidikan=gelar_belakang_pendidikan,
-                nomor_seri_ijazah_pendidikan=nomor_seri_ijazah_pendidikan,
-                tanggal_terbit_ijazah_pendidikan=tanggal_terbit_ijazah_pendidikan,
-                file_ijazah_pendidikan=fs.save(
-                    f"media/pendidikan/{new_file_name}", file_ijazah_pendidikan
-                ),
-                user_id=user_id,
+            messages.warning(
+                request, "Data Pendidikan tidak ditemukan. Tolong gunakan fungsi buat."
             )
-            messages.success(request, "Pendidikan berhasil ditambahkan.")
 
         return redirect("profile")
 
     return render(request, "pegawai/profile.html")
+
+
+@login_required
+def delete_pendidikan(request, id_pendidikan):
+    pendidikan = get_object_or_404(
+        Pendidikan, id_pendidikan=id_pendidikan, user=request.user
+    )
+
+    try:
+        # Hapus file dan data pendidikan
+        if pendidikan.file_ijazah_pendidikan:
+            old_file_path = pendidikan.file_ijazah_pendidikan.path
+            if os.path.exists(old_file_path):
+                os.remove(old_file_path)
+        pendidikan.delete()
+        messages.success(request, "Data Pendidikan berhasil dihapus.")
+    except Pendidikan.DoesNotExist:
+        messages.warning(request, "Data Pendidikan tidak ditemukan.")
+
+    return redirect("profile")

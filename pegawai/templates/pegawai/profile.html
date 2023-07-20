@@ -41,7 +41,7 @@
             </div>
         </div>
     </nav>
-    <div class="container-fluid p-3">
+    <div class="container-fluid p-5">
         {% if messages %}
         {% for message in messages %}
         {% if message.tags == 'success' %}
@@ -51,6 +51,11 @@
         </div>
         {% elif message.tags == 'error' %}
         <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% elif message.tags == 'warning' %}
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
             {{ message }}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
@@ -66,7 +71,7 @@
             <div class="col-sm-4">
                 <div class="card text-center">
                     <div class="card-body">
-                        <!-- Tampilkan pesan jika data pendidikan ada dan File Ijazah Pendidikan sudah diunggah -->
+                        <!-- Tampilkan pesan jika profil belum dilengkapi -->
                         {% if not pegawai %}
                         <div class="alert alert-danger alert-dismissible fade show" role="alert">
                             Data Profil Anda belum lengkap! Silahkan melengkapi Data Profil Anda!
@@ -186,7 +191,7 @@
                                     <i class="bi bi-briefcase"></i>
                                     Jabatan
                                 </h5>
-                                <p class="card-text text-body-tertiary fs-6 fw-lighter">Belum Ada</p>
+                                <p class="card-text text-body-tertiary fs-6 fw-lighter">{{ jabatan_terakhir.get_nama_jabatan_display }}</p>
                             </div>
                         </div>
                     </div>
@@ -195,230 +200,445 @@
             <div class="col-sm-8">
                 <div class="card">
                     <div class="card-header">
-                        <ul class="nav nav-tabs card-header-tabs">
-                            <li class="nav-item">
-                                <a class="nav-link active" aria-current="true" href="#">Riwayat Pendidikan</a>
-                            </li>
-                        </ul>
+                        <nav>
+                            <div class="nav nav-tabs card-header-tabs" id="nav-tab" role="tablist">
+                                <button class="nav-link active" id="nav-pendidikan-tab" data-bs-toggle="tab" data-bs-target="#nav-pendidikan" type="button" role="tab" aria-controls="nav-pendidikan" aria-selected="true">Riwayat Pendidikan</button>
+                                <button class="nav-link" id="nav-jabatan-tab" data-bs-toggle="tab" data-bs-target="#nav-jabatan" type="button" role="tab" aria-controls="nav-jabatan" aria-selected="false">Riwayat Jabatan</button>
+                                <button class="nav-link" id="nav-pangkat-tab" data-bs-toggle="tab" data-bs-target="#nav-pangkat" type="button" role="tab" aria-controls="nav-pangkat" aria-selected="false">Pangkat & Golongan</button>
+                                <button class="nav-link" id="nav-angkakredit-tab" data-bs-toggle="tab" data-bs-target="#nav-angkakredit" type="button" role="tab" aria-controls="nav-angkakredit" aria-selected="false">Angka Kredit</button>
+                                <button class="nav-link" id="nav-diklat-tab" data-bs-toggle="tab" data-bs-target="#nav-diklat" type="button" role="tab" aria-controls="nav-diklat" aria-selected="false">Riwayat Diklat</button>
+                            </div>
+                        </nav>
                     </div>
                     <div class="card-body">
-                        <h5 class="card-title">Special title treatment</h5>
-                        <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                        <table id="tabelPendidikan" class="table">
-                            <thead>
-                                <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">Tingkat Pendidikan</th>
-                                    <th scope="col">Lembaga Pendidikan</th>
-                                    <th scope="col">Jurusan Pendidikan</th>
-                                    <th scope="col">Tanggal Terbit Ijazah</th>
-                                    <th scope="col">File Ijazah</th>
-                                    <th scope="col">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody class="table-group-divider">
-                                <tr>
-                                    <th scope="row">1</th>
-                                    <td>Mark</td>
-                                    <td>Otto</td>
-                                    <td>@mdo</td>
-                                    <td>@mdo</td>
-                                    <td>@mdo</td>
-                                    <td>@mdo</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="card">
-            <div class="card-header">
-                <ul class="nav nav-tabs" id="myTab" role="tablist">
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link active" id="pendidikan-tab" data-bs-toggle="tab" data-bs-target="#pendidikan-tab-pane" type="button" role="tab" aria-controls="pendidikan-tab-pane" aria-selected="false">Pendidikan</button>
-                    </li>
-                </ul>
-            </div>
-            <div class="card-body">
-                <div class="tab-content" id="myTabContent">
-                    <div class="tab-pane fade show active" id="pendidikan-tab-pane" role="tabpanel" aria-labelledby="pendidikan-tab" tabindex="0">
-                        <!-- Tampilkan pesan jika data pendidikan ada dan File Ijazah Pendidikan sudah diunggah -->
-                        {% if pendidikan %}
-                        <div class="alert alert-success alert-dismissible fade show" role="alert">
-                            Data Pendidikan Anda sudah lengkap!
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                        {% else %}
-                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                            Data Pendidikan Anda belum lengkap! Silahkan melengkapi Data Pendidikan Anda!
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                        {% endif %}
-                        <!-- Tampilkan data pendidikan -->
-                        <div class="pendidikan">
-                            <h2>Riwayat Pendidikan</h2>
-                            {% if pendidikan %}
-                            <div class="accordion mb-3" id="accordionDataPendidikan">
-                                {% for pend in pendidikan %}
-                                <div class="accordion-item">
-                                    <h2 class="accordion-header">
-                                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ forloop.counter }}" aria-expanded="true" aria-controls="collapse{{ forloop.counter }}">
-                                            Riwayat Pendidikan {{ forloop.counter }}
+                        {% if pegawai %}
+                        <div class="tab-content" id="nav-tabContent">
+                            <div class="tab-pane fade show active" id="nav-pendidikan" role="tabpanel" aria-labelledby="nav-pendidikan-tab" tabindex="0">
+                                <div class="row">
+                                    <div class="col d-flex align-items-center">
+                                        <h3 class="card-title">Tabel Riwayat Pendidikan</h3>
+                                    </div>
+                                    <div class="col d-flex justify-content-end">
+                                        <!-- Button trigger modal tambah riwayat pendidikan -->
+                                        <button type="button" class="btn btn-primary my-3" data-bs-toggle="modal" data-bs-target="#tambahPendidikan">
+                                            <i class="bi bi-plus-square"></i>
                                         </button>
-                                    </h2>
-                                    <div id="collapse{{ forloop.counter }}" class="accordion-collapse collapse" data-bs-parent="#accordionDataPendidikan">
-                                        <div class="accordion-body">
-                                            <form method="post" action="{% url 'edit_pendidikan' pend.id_pendidikan %}" enctype="multipart/form-data">
+                                    </div>
+                                </div>
+                                <!-- Modal tambah riwayat pendidikan -->
+                                <div class="modal fade" id="tambahPendidikan" tabindex="-1" aria-labelledby="tambahPendidikanLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                                        <div class="modal-content">
+                                            <form method="post" action="{% url 'add_pendidikan' %}" enctype="multipart/form-data">
                                                 {% csrf_token %}
-                                                <div class="form-floating mb-1">
-                                                    <select name="tingkat_pendidikan" class="form-select" id="floatingSelectTingkatPendidikan" aria-label="Pilih Tingkat Pendidikan" required>
-                                                        {% for pilihan in pilihan_tingkat_pendidikan %}
-                                                            <option value="{{ pilihan.0 }}" {% if pend and pend.tingkat_pendidikan == pilihan.0 %}selected{% endif %}>{{ pilihan.1 }}</option>
-                                                        {% endfor %}
-                                                    </select>
-                                                    <label for="floatingSelectTingkatPendidikan">Tingkat Pendidikan</label>
+                                                <div class="modal-header">
+                                                    <h1 class="modal-title fs-5" id="tambahPendidikanLabel">Edit Riwayat Pendidikan</h1>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                 </div>
-                                                <div class="form-floating mb-1">
-                                                    <input name="lembaga_pendidikan" type="text" class="form-control" id="floatingLembagaPendidikan" placeholder="Lembaga Pendidikan" value="{{ pend.lembaga_pendidikan }}" required>
-                                                    <label for="floatingLembagaPendidikan">Lembaga Pendidikan</label>
-                                                </div>
-                                                <div class="form-floating mb-1">
-                                                    <input name="fakultas_pendidikan" type="text" class="form-control" id="floatingFakultasPendidikan" placeholder="Fakultas Pendidikan" value="{{ pend.fakultas_pendidikan }}">
-                                                    <label for="floatingFakultasPendidikan">Fakultas Pendidikan</label>
-                                                </div>
-                                                <div class="form-floating mb-1">
-                                                    <input name="jurusan_pendidikan" type="text" class="form-control" id="floatingJurusanPendidikan" placeholder="Jurusan Pendidikan" value="{{ pend.jurusan_pendidikan }}">
-                                                    <label for="floatingJurusanPendidikan">Jurusan Pendidikan</label>
-                                                </div>
-                                                <div class="form-floating mb-1">
-                                                    <input name="gelar_depan_pendidikan" type="text" class="form-control" id="floatingGelarDepanPendidikan" placeholder="Gelar Depan Pendidikan" value="{{ pend.gelar_depan_pendidikan }}">
-                                                    <label for="floatingGelarDepanPendidikan">Gelar Depan Pendidikan</label>
-                                                </div>
-                                                <div class="form-floating mb-1">
-                                                    <input name="gelar_belakang_pendidikan" type="text" class="form-control" id="floatingGelarBelakangPendidikan" placeholder="Gelar Belakang Pendidikan" value="{{ pend.gelar_belakang_pendidikan }}">
-                                                    <label for="floatingGelarBelakangPendidikan">Gelar Belakang Pendidikan</label>
-                                                </div>
-                                                <div class="form-floating mb-1">
-                                                    <input name="nomor_seri_ijazah_pendidikan" type="text" class="form-control" id="floatingNomorSeriIjazahPendidikan" placeholder="Nomor Seri Ijazah Pendidikan" value="{{ pend.nomor_seri_ijazah_pendidikan }}" required>
-                                                    <label for="floatingNomorSeriIjazahPendidikan">Nomor Seri Ijazah Pendidikan</label>
-                                                </div>
-                                                <div class="form-floating mb-1">
-                                                    <input name="tanggal_terbit_ijazah_pendidikan" type="date" class="form-control" id="floatingTanggalTerbitIjazahPendidikan" placeholder="Tanggal Terbit Ijazah Pendidikan" value="{{ pend.tanggal_terbit_ijazah_pendidikan }}" required>
-                                                    <label for="floatingTanggalTerbitIjazahPendidikan">Tanggal Terbit Ijazah Pendidikan</label>
-                                                </div>
-                                                <div class="form-floating mb-1">
-                                                    <input name="file_ijazah_pendidikan" type="file" class="form-control" id="floatingFileIjazahPendidikan" required>
-                                                    <label for="floatingFileIjazahPendidikan">File Ijazah Pendidikan</label>
-                                                </div>
-                                                <!-- Tampilkan pesan jika data pendidikan ada dan File Ijazah Pendidikan sudah diunggah -->
-                                                {% if pend %}
-                                                {% if pend.file_ijazah_pendidikan %}
-                                                {% if file_exists_pendidikan %}
-                                                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                                                    File Ijazah Pendidikan sudah diunggah.
-                                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                                                </div>
-                                                {% else %}
-                                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                                    File Ijazah Pendidikan belum diunggah. Silahkan unggah File Ijazah Pendidikan.
-                                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                                                </div>
-                                                {% endif %}
-                                                {% else %}
-                                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                                    File Ijazah Pendidikan belum diunggah. Silahkan unggah File Ijazah Pendidikan.
-                                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                                                </div>
-                                                {% endif %}
-                                                {% else %}
-                                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                                    File Ijazah Pendidikan belum diunggah. Silahkan unggah File Ijazah Pendidikan.
-                                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                                                </div>
-                                                {% endif %}
-                                                <div class="d-grid gap-2">
-                                                    <button type="submit" class="btn btn-primary">Simpan</button>
-                                                    <!-- Button trigger modal -->
-                                                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalHapusDataPendidikan">
-                                                        Hapus
-                                                    </button>
-                                                </div>
-                                            </form>
-                                            <form action="{% url 'delete_pendidikan' pend.id_pendidikan %}" method="post">
-                                                {% csrf_token %}
-                                                <!-- Modal -->
-                                                <div class="modal fade" id="modalHapusDataPendidikan" tabindex="-1" aria-labelledby="modalHapusDataPendidikanLabel" aria-hidden="true">
-                                                    <div class="modal-dialog">
-                                                        <div class="modal-content">
-                                                            <div class="modal-header">
-                                                                <h1 class="modal-title fs-5" id="modalHapusDataPendidikanLabel">Modal title</h1>
-                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                            </div>
-                                                            <div class="modal-body">
-                                                                Apakah Anda yakin menghapus Data Pendidikan ini?
-                                                            </div>
-                                                            <div class="modal-footer">
-                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                                                                <button type="submit" class="btn btn-danger">Hapus</button>
-                                                            </div>
-                                                        </div>
+                                                <div class="modal-body">
+                                                    {% csrf_token %}
+                                                    <div class="form-floating mb-1">
+                                                        <select name="tingkat_pendidikan" class="form-select" id="floatingSelectTingkatPendidikan" aria-label="Pilih Tingkat Pendidikan" required>
+                                                            {% for pilihan in pilihan_tingkat_pendidikan %}
+                                                                <option value="{{ pilihan.0 }}">{{ pilihan.1 }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                        <label for="floatingSelectTingkatPendidikan">Tingkat Pendidikan</label>
                                                     </div>
+                                                    <div class="form-floating mb-1">
+                                                        <input name="lembaga_pendidikan" type="text" class="form-control" id="floatingLembagaPendidikan" placeholder="Lembaga Pendidikan" required>
+                                                        <label for="floatingLembagaPendidikan">Lembaga Pendidikan</label>
+                                                    </div>
+                                                    <div class="form-floating mb-1">
+                                                        <input name="fakultas_pendidikan" type="text" class="form-control" id="floatingFakultasPendidikan" placeholder="Fakultas Pendidikan">
+                                                        <label for="floatingFakultasPendidikan">Fakultas Pendidikan</label>
+                                                    </div>
+                                                    <div class="form-floating mb-1">
+                                                        <input name="jurusan_pendidikan" type="text" class="form-control" id="floatingJurusanPendidikan" placeholder="Jurusan Pendidikan">
+                                                        <label for="floatingJurusanPendidikan">Jurusan Pendidikan</label>
+                                                    </div>
+                                                    <div class="form-floating mb-1">
+                                                        <input name="gelar_depan_pendidikan" type="text" class="form-control" id="floatingGelarDepanPendidikan" placeholder="Gelar Depan Pendidikan">
+                                                        <label for="floatingGelarDepanPendidikan">Gelar Depan Pendidikan</label>
+                                                    </div>
+                                                    <div class="form-floating mb-1">
+                                                        <input name="gelar_belakang_pendidikan" type="text" class="form-control" id="floatingGelarBelakangPendidikan" placeholder="Gelar Belakang Pendidikan">
+                                                        <label for="floatingGelarBelakangPendidikan">Gelar Belakang Pendidikan</label>
+                                                    </div>
+                                                    <div class="form-floating mb-1">
+                                                        <input name="nomor_seri_ijazah_pendidikan" type="text" class="form-control" id="floatingNomorSeriIjazahPendidikan" placeholder="Nomor Seri Ijazah Pendidikan" required>
+                                                        <label for="floatingNomorSeriIjazahPendidikan">Nomor Seri Ijazah Pendidikan</label>
+                                                    </div>
+                                                    <div class="form-floating mb-1">
+                                                        <input name="tanggal_terbit_ijazah_pendidikan" type="date" class="form-control" id="floatingTanggalTerbitIjazahPendidikan" placeholder="Tanggal Terbit Ijazah Pendidikan" required>
+                                                        <label for="floatingTanggalTerbitIjazahPendidikan">Tanggal Terbit Ijazah Pendidikan</label>
+                                                    </div>
+                                                    <div class="form-floating mb-1">
+                                                        <input name="file_ijazah_pendidikan" type="file" class="form-control" id="floatingFileIjazahPendidikan" required>
+                                                        <label for="floatingFileIjazahPendidikan">File Ijazah Pendidikan</label>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                                                    <button type="submit" class="btn btn-primary">Simpan</button>
                                                 </div>
                                             </form>
                                         </div>
                                     </div>
                                 </div>
-                                {% endfor %}
-                            </div>
-                            {% endif %}
-                            <h2>Input Data Pendidikan</h2>
-                            <form method="post" action="{% url 'add_pendidikan' %}" enctype="multipart/form-data">
-                                {% csrf_token %}
-                                <div class="form-floating mb-1">
-                                    <select name="tingkat_pendidikan" class="form-select" id="floatingSelectTingkatPendidikan" aria-label="Pilih Tingkat Pendidikan" required>
-                                        {% for pilihan in pilihan_tingkat_pendidikan %}
-                                            <option value="{{ pilihan.0 }}">{{ pilihan.1 }}</option>
+                                <table id="tabelPendidikan" class="table">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">#</th>
+                                            <th scope="col">Tingkat Pendidikan</th>
+                                            <th scope="col">Lembaga Pendidikan</th>
+                                            <th scope="col">Jurusan Pendidikan</th>
+                                            <th scope="col">Tanggal Terbit Ijazah</th>
+                                            <th scope="col">File Ijazah</th>
+                                            <th scope="col">Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="table-group-divider">
+                                        {% if pendidikan %}
+                                        {% for pend in pendidikan %}
+                                        <tr>
+                                            <th class="align-middle" scope="row">{{ forloop.counter }}</th>
+                                            <td class="align-middle">{{ pend.tingkat_pendidikan }}</td>
+                                            <td class="align-middle">{{ pend.lembaga_pendidikan }}</td>
+                                            <td class="align-middle">{{ pend.jurusan_pendidikan }}</td>
+                                            <td class="align-middle">{{ pend.tanggal_terbit_ijazah_pendidikan }}</td>
+                                            <td class="align-middle">
+                                                <!-- Button trigger link lihat file ijazah -->
+                                                <a href="{% url 'download_ijazah' pend.id_pendidikan %}" class="btn" target="_blank">
+                                                    <i class="bi bi-box-arrow-up-right"></i>
+                                                </a>
+                                            </td>
+                                            <td class="align-middle">
+                                                <!-- Button trigger modal edit pendidikan -->
+                                                <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#editPendidikan{{ pend.id_pendidikan }}">
+                                                    <i class="bi bi-pencil"></i>
+                                                </button>
+                                                <!-- Modal edit pendidikan -->
+                                                <div class="modal fade" id="editPendidikan{{ pend.id_pendidikan }}" tabindex="-1" aria-labelledby="editPendidikanLabel{{ pend.id_pendidikan }}" aria-hidden="true">
+                                                    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                                                        <div class="modal-content">
+                                                            <form method="post" action="{% url 'edit_pendidikan' pend.id_pendidikan %}" enctype="multipart/form-data">
+                                                                <div class="modal-header">
+                                                                    <h1 class="modal-title fs-5" id="editPendidikanLabel{{ pend.id_pendidikan }}">Edit Riwayat Pendidikan</h1>
+                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    {% csrf_token %}
+                                                                    <div class="form-floating mb-1">
+                                                                        <select name="tingkat_pendidikan" class="form-select" id="floatingSelectTingkatPendidikan" aria-label="Pilih Tingkat Pendidikan" required>
+                                                                            {% for pilihan in pilihan_tingkat_pendidikan %}
+                                                                                <option value="{{ pilihan.0 }}" {% if pend and pend.tingkat_pendidikan == pilihan.0 %}selected{% endif %}>{{ pilihan.1 }}</option>
+                                                                            {% endfor %}
+                                                                        </select>
+                                                                        <label for="floatingSelectTingkatPendidikan">Tingkat Pendidikan</label>
+                                                                    </div>
+                                                                    <div class="form-floating mb-1">
+                                                                        <input name="lembaga_pendidikan" type="text" class="form-control" id="floatingLembagaPendidikan" placeholder="Lembaga Pendidikan" value="{{ pend.lembaga_pendidikan }}" required>
+                                                                        <label for="floatingLembagaPendidikan">Lembaga Pendidikan</label>
+                                                                    </div>
+                                                                    <div class="form-floating mb-1">
+                                                                        <input name="fakultas_pendidikan" type="text" class="form-control" id="floatingFakultasPendidikan" placeholder="Fakultas Pendidikan" value="{{ pend.fakultas_pendidikan }}">
+                                                                        <label for="floatingFakultasPendidikan">Fakultas Pendidikan</label>
+                                                                    </div>
+                                                                    <div class="form-floating mb-1">
+                                                                        <input name="jurusan_pendidikan" type="text" class="form-control" id="floatingJurusanPendidikan" placeholder="Jurusan Pendidikan" value="{{ pend.jurusan_pendidikan }}">
+                                                                        <label for="floatingJurusanPendidikan">Jurusan Pendidikan</label>
+                                                                    </div>
+                                                                    <div class="form-floating mb-1">
+                                                                        <input name="gelar_depan_pendidikan" type="text" class="form-control" id="floatingGelarDepanPendidikan" placeholder="Gelar Depan Pendidikan" value="{{ pend.gelar_depan_pendidikan }}">
+                                                                        <label for="floatingGelarDepanPendidikan">Gelar Depan Pendidikan</label>
+                                                                    </div>
+                                                                    <div class="form-floating mb-1">
+                                                                        <input name="gelar_belakang_pendidikan" type="text" class="form-control" id="floatingGelarBelakangPendidikan" placeholder="Gelar Belakang Pendidikan" value="{{ pend.gelar_belakang_pendidikan }}">
+                                                                        <label for="floatingGelarBelakangPendidikan">Gelar Belakang Pendidikan</label>
+                                                                    </div>
+                                                                    <div class="form-floating mb-1">
+                                                                        <input name="nomor_seri_ijazah_pendidikan" type="text" class="form-control" id="floatingNomorSeriIjazahPendidikan" placeholder="Nomor Seri Ijazah Pendidikan" value="{{ pend.nomor_seri_ijazah_pendidikan }}" required>
+                                                                        <label for="floatingNomorSeriIjazahPendidikan">Nomor Seri Ijazah Pendidikan</label>
+                                                                    </div>
+                                                                    <div class="form-floating mb-1">
+                                                                        <input name="tanggal_terbit_ijazah_pendidikan" type="date" class="form-control" id="floatingTanggalTerbitIjazahPendidikan" placeholder="Tanggal Terbit Ijazah Pendidikan" value="{{ pend.tanggal_terbit_ijazah_pendidikan }}" required>
+                                                                        <label for="floatingTanggalTerbitIjazahPendidikan">Tanggal Terbit Ijazah Pendidikan</label>
+                                                                    </div>
+                                                                    <div class="form-floating mb-1">
+                                                                        <input name="file_ijazah_pendidikan" type="file" class="form-control" id="floatingFileIjazahPendidikan" required>
+                                                                        <label for="floatingFileIjazahPendidikan">File Ijazah Pendidikan</label>
+                                                                    </div>
+                                                                    <!-- Tampilkan pesan jika data pendidikan ada dan File Ijazah Pendidikan sudah diunggah -->
+                                                                    {% if pend %}
+                                                                    {% if pend.file_ijazah_pendidikan %}
+                                                                    {% if file_exists_pendidikan %}
+                                                                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                                                        File Ijazah Pendidikan sudah diunggah.
+                                                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                                                    </div>
+                                                                    {% else %}
+                                                                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                                                        File Ijazah Pendidikan belum diunggah. Silahkan unggah File Ijazah Pendidikan.
+                                                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                                                    </div>
+                                                                    {% endif %}
+                                                                    {% else %}
+                                                                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                                                        File Ijazah Pendidikan belum diunggah. Silahkan unggah File Ijazah Pendidikan.
+                                                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                                                    </div>
+                                                                    {% endif %}
+                                                                    {% else %}
+                                                                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                                                        File Ijazah Pendidikan belum diunggah. Silahkan unggah File Ijazah Pendidikan.
+                                                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                                                    </div>
+                                                                    {% endif %}
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                                                                    <button type="submit" class="btn btn-primary">Simpan</button>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <!-- Button trigger modal hapus pendidikan -->
+                                                <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#deletePendidikan{{ pend.id_pendidikan }}">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                                <!-- Modal hapus pendidikan -->
+                                                <form action="{% url 'delete_pendidikan' pend.id_pendidikan %}" method="post">
+                                                    {% csrf_token %}
+                                                    <!-- Modal -->
+                                                    <div class="modal fade" id="deletePendidikan{{ pend.id_pendidikan }}" tabindex="-1" aria-labelledby="deletePendidikanLabel{{ pend.id_pendidikan }}" aria-hidden="true">
+                                                        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h1 class="modal-title fs-5" id="deletePendidikanLabel{{ pend.id_pendidikan }}">Hapus Riwayat Pendidikan</h1>
+                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    Apakah Anda yakin menghapus Data Pendidikan ini?
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                                                    <button type="submit" class="btn btn-danger">Hapus</button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </td>
+                                        </tr>
                                         {% endfor %}
-                                    </select>
-                                    <label for="floatingSelectTingkatPendidikan">Tingkat Pendidikan</label>
+                                        {% endif %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="tab-pane fade" id="nav-jabatan" role="tabpanel" aria-labelledby="nav-jabatan-tab" tabindex="0">
+                                <div class="row">
+                                    <div class="col d-flex align-items-center">
+                                        <h3 class="card-title">Tabel Riwayat Jabatan</h3>
+                                    </div>
+                                    <div class="col d-flex justify-content-end">
+                                        <!-- Button trigger modal tambah riwayat jabatan -->
+                                        <button type="button" class="btn btn-primary my-3" data-bs-toggle="modal" data-bs-target="#tambahJabatan">
+                                            <i class="bi bi-plus-square"></i>
+                                        </button>
+                                    </div>
                                 </div>
-                                <div class="form-floating mb-1">
-                                    <input name="lembaga_pendidikan" type="text" class="form-control" id="floatingLembagaPendidikan" placeholder="Lembaga Pendidikan" required>
-                                    <label for="floatingLembagaPendidikan">Lembaga Pendidikan</label>
+                                <!-- Modal tambah riwayat jabatan -->
+                                <div class="modal fade" id="tambahJabatan" tabindex="-1" aria-labelledby="tambahJabatanLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                                        <div class="modal-content">
+                                            <form method="post" action="{% url 'add_jabatan' %}" enctype="multipart/form-data">
+                                                {% csrf_token %}
+                                                <div class="modal-header">
+                                                    <h1 class="modal-title fs-5" id="tambahJabatanLabel">Edit Riwayat Jabatan</h1>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    {% csrf_token %}
+                                                    <div class="form-floating mb-1">
+                                                        <select name="nama_jabatan" class="form-select" id="floatingSelectNamaJabatan" aria-label="Pilih Jabatan" required>
+                                                            {% for pilihan in pilihan_jabatan %}
+                                                                <option value="{{ pilihan.0 }}">{{ pilihan.1 }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                        <label for="floatingSelectNamaJabatan">Jabatan</label>
+                                                    </div>
+                                                    <div class="form-floating mb-1">
+                                                        <input name="nomor_sk_jabatan" type="text" class="form-control" id="floatingNomorSKJabatan" placeholder="Nomor SK Jabatan" required>
+                                                        <label for="floatingNomorSKJabatan">Nomor SK Jabatan</label>
+                                                    </div>
+                                                    <div class="form-floating mb-1">
+                                                        <input name="tanggal_sk_jabatan" type="date" class="form-control" id="floatingTanggalSKJabatan" placeholder="Tanggal SK Jabatan" required>
+                                                        <label for="floatingTanggalSKJabatan">Tanggal SK Jabatan</label>
+                                                    </div>
+                                                    <div class="form-floating mb-1">
+                                                        <input name="tmt_jabatan" type="text" class="form-control" id="floatingTMTJabatan" placeholder="TMT Jabatan" required>
+                                                        <label for="floatingTMTJabatan">TMT Jabatan</label>
+                                                    </div>
+                                                    <div class="form-floating mb-1">
+                                                        <input name="file_sk_jabatan" type="file" class="form-control" id="floatingFileSKJabatan" required>
+                                                        <label for="floatingFileSKJabatan">File SK Jabatan</label>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                                                    <button type="submit" class="btn btn-primary">Simpan</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="form-floating mb-1">
-                                    <input name="fakultas_pendidikan" type="text" class="form-control" id="floatingFakultasPendidikan" placeholder="Fakultas Pendidikan">
-                                    <label for="floatingFakultasPendidikan">Fakultas Pendidikan</label>
-                                </div>
-                                <div class="form-floating mb-1">
-                                    <input name="jurusan_pendidikan" type="text" class="form-control" id="floatingJurusanPendidikan" placeholder="Jurusan Pendidikan">
-                                    <label for="floatingJurusanPendidikan">Jurusan Pendidikan</label>
-                                </div>
-                                <div class="form-floating mb-1">
-                                    <input name="gelar_depan_pendidikan" type="text" class="form-control" id="floatingGelarDepanPendidikan" placeholder="Gelar Depan Pendidikan">
-                                    <label for="floatingGelarDepanPendidikan">Gelar Depan Pendidikan</label>
-                                </div>
-                                <div class="form-floating mb-1">
-                                    <input name="gelar_belakang_pendidikan" type="text" class="form-control" id="floatingGelarBelakangPendidikan" placeholder="Gelar Belakang Pendidikan">
-                                    <label for="floatingGelarBelakangPendidikan">Gelar Belakang Pendidikan</label>
-                                </div>
-                                <div class="form-floating mb-1">
-                                    <input name="nomor_seri_ijazah_pendidikan" type="text" class="form-control" id="floatingNomorSeriIjazahPendidikan" placeholder="Nomor Seri Ijazah Pendidikan" required>
-                                    <label for="floatingNomorSeriIjazahPendidikan">Nomor Seri Ijazah Pendidikan</label>
-                                </div>
-                                <div class="form-floating mb-1">
-                                    <input name="tanggal_terbit_ijazah_pendidikan" type="date" class="form-control" id="floatingTanggalTerbitIjazahPendidikan" placeholder="Tanggal Terbit Ijazah Pendidikan" required>
-                                    <label for="floatingTanggalTerbitIjazahPendidikan">Tanggal Terbit Ijazah Pendidikan</label>
-                                </div>
-                                <div class="form-floating mb-1">
-                                    <input name="file_ijazah_pendidikan" type="file" class="form-control" id="floatingFileIjazahPendidikan" required>
-                                    <label for="floatingFileIjazahPendidikan">File Ijazah Pendidikan</label>
-                                </div>
-                                <button type="submit" class="btn btn-primary">Simpan</button>
-                            </form>
+                                <table id="tabelJabatan" class="table">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">#</th>
+                                            <th scope="col">Jabatan</th>
+                                            <th scope="col">Nomor SK Jabatan</th>
+                                            <th scope="col">Tanggal SK Jabatan</th>
+                                            <th scope="col">TMT Jabatan</th>
+                                            <th scope="col">File SK Jabatan</th>
+                                            <th scope="col">Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="table-group-divider">
+                                        {% if jabatan %}
+                                        {% for jab in jabatan %}
+                                        <tr>
+                                            <th class="align-middle" scope="row">{{ forloop.counter }}</th>
+                                            <td class="align-middle">{{ jab.get_nama_jabatan_display }}</td>
+                                            <td class="align-middle">{{ jab.nomor_sk_jabatan }}</td>
+                                            <td class="align-middle">{{ jab.tanggal_sk_jabatan }}</td>
+                                            <td class="align-middle">{{ jab.tmt_jabatan }}</td>
+                                            <td class="align-middle">
+                                                <!-- Button trigger link lihat file sk jabatan -->
+                                                <a href="{% url 'download_sk_jabatan' jab.id_jabatan %}" class="btn" target="_blank">
+                                                    <i class="bi bi-box-arrow-up-right"></i>
+                                                </a>
+                                            </td>
+                                            <td class="align-middle">
+                                                <!-- Button trigger modal edit jabatan -->
+                                                <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#editJabatan{{ jab.id_jabatan }}">
+                                                    <i class="bi bi-pencil"></i>
+                                                </button>
+                                                <!-- Modal edit jabatan -->
+                                                <div class="modal fade" id="editJabatan{{ jab.id_jabatan }}" tabindex="-1" aria-labelledby="editJabatanLabel{{ jab.id_jabatan }}" aria-hidden="true">
+                                                    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                                                        <div class="modal-content">
+                                                            <form method="post" action="{% url 'edit_jabatan' jab.id_jabatan %}" enctype="multipart/form-data">
+                                                                <div class="modal-header">
+                                                                    <h1 class="modal-title fs-5" id="editJabatanLabel{{ jab.id_jabatan }}">Edit Riwayat Jabatan</h1>
+                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    {% csrf_token %}
+                                                                    <div class="form-floating mb-1">
+                                                                        <select name="nama_jabatan" class="form-select" id="floatingSelectNamaJabatan" aria-label="Pilih Jabatan" required>
+                                                                            {% for pilihan in pilihan_jabatan %}
+                                                                                <option value="{{ pilihan.0 }}" {% if jab and jab.nama_jabatan == pilihan.0 %}selected{% endif %}>{{ pilihan.1 }}</option>
+                                                                            {% endfor %}
+                                                                        </select>
+                                                                        <label for="floatingSelectNamaJabatan">Jabatan</label>
+                                                                    </div>
+                                                                    <div class="form-floating mb-1">
+                                                                        <input name="nomor_sk_jabatan" type="text" class="form-control" id="floatingNomorSKJabatan" placeholder="Nomor SK Jabatan" value="{{ jab.nomor_sk_jabatan }}" required>
+                                                                        <label for="floatingNomorSKJabatan">Nomor SK Jabatan</label>
+                                                                    </div>
+                                                                    <div class="form-floating mb-1">
+                                                                        <input name="tanggal_sk_jabatan" type="date" class="form-control" id="floatingTanggalSKJabatan" placeholder="Tanggal SK Jabatan" value="{{ jab.tanggal_sk_jabatan }}" required>
+                                                                        <label for="floatingTanggalSKJabatan">Tanggal SK Jabatan</label>
+                                                                    </div>
+                                                                    <div class="form-floating mb-1">
+                                                                        <input name="tmt_jabatan" type="text" class="form-control" id="floatingTMTJabatan" placeholder="TMT Jabatan" value="{{ jab.tmt_jabatan }}" required>
+                                                                        <label for="floatingTMTJabatan">TMT Jabatan</label>
+                                                                    </div>
+                                                                    <div class="form-floating mb-1">
+                                                                        <input name="file_sk_jabatan" type="file" class="form-control" id="floatingFileSKJabatan" required>
+                                                                        <label for="floatingFileSKJabatan">File SK Jabatan</label>
+                                                                    </div>
+                                                                    <!-- Tampilkan pesan jika data jabatan ada dan File SK Jabatan sudah diunggah -->
+                                                                    {% if jab %}
+                                                                    {% if jab.file_sk_jabatan %}
+                                                                    {% if file_exists_jabatan %}
+                                                                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                                                        File SK Jabatan sudah diunggah.
+                                                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                                                    </div>
+                                                                    {% else %}
+                                                                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                                                        File SK Jabatan belum diunggah. Silahkan unggah File SK Jabatan.
+                                                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                                                    </div>
+                                                                    {% endif %}
+                                                                    {% else %}
+                                                                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                                                        File SK Jabatan belum diunggah. Silahkan unggah File SK Jabatan.
+                                                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                                                    </div>
+                                                                    {% endif %}
+                                                                    {% else %}
+                                                                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                                                        File SK Jabatan belum diunggah. Silahkan unggah File SK Jabatan.
+                                                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                                                    </div>
+                                                                    {% endif %}
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                                                                    <button type="submit" class="btn btn-primary">Simpan</button>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <!-- Button trigger modal hapus jabatan -->
+                                                <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#deleteJabatan{{ jab.id_jabatan }}">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                                <!-- Modal hapus jabatan -->
+                                                <form action="{% url 'delete_jabatan' jab.id_jabatan %}" method="post">
+                                                    {% csrf_token %}
+                                                    <!-- Modal -->
+                                                    <div class="modal fade" id="deleteJabatan{{ jab.id_jabatan }}" tabindex="-1" aria-labelledby="deleteJabatanLabel{{ jab.id_jabatan }}" aria-hidden="true">
+                                                        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h1 class="modal-title fs-5" id="deleteJabatanLabel{{ jab.id_jabatan }}">Hapus Riwayat Jabatan</h1>
+                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    Apakah Anda yakin menghapus Data Jabatan ini?
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                                                    <button type="submit" class="btn btn-danger">Hapus</button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                        {% endif %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="tab-pane fade" id="nav-pangkat" role="tabpanel" aria-labelledby="nav-pangkat-tab" tabindex="0">...</div>
+                            <div class="tab-pane fade" id="nav-angkakredit" role="tabpanel" aria-labelledby="nav-angkakredit-tab" tabindex="0">...</div>
+                            <div class="tab-pane fade" id="nav-diklat" role="tabpanel" aria-labelledby="nav-diklat-tab" tabindex="0">...</div>
                         </div>
+                        {% else %}
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            Data Profil Anda belum lengkap! Silahkan melengkapi Data Profil Anda!
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -429,6 +649,7 @@
     <script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.js"></script>
     <script>
         new DataTable('#tabelPendidikan');
+        new DataTable('#tabelJabatan');
     </script>
 </body>
 

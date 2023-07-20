@@ -22,4 +22,25 @@ urlpatterns = [
         login_required(views.delete_pendidikan),
         name="delete_pendidikan",
     ),
+    path(
+        "download_ijazah/<int:id_pendidikan>/",
+        login_required(views.download_ijazah),
+        name="download_ijazah",
+    ),
+    path("add_jabatan/", login_required(views.add_jabatan), name="add_jabatan"),
+    path(
+        "edit_jabatan/<int:id_jabatan>/",
+        login_required(views.edit_jabatan),
+        name="edit_jabatan",
+    ),
+    path(
+        "delete_jabatan/<int:id_jabatan>/",
+        login_required(views.delete_jabatan),
+        name="delete_jabatan",
+    ),
+    path(
+        "download_sk_jabatan/<int:id_jabatan>/",
+        login_required(views.download_sk_jabatan),
+        name="download_sk_jabatan",
+    ),
 ]

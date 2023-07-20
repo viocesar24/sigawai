@@ -93,7 +93,7 @@ class Jabatan(models.Model):
     tanggal_sk_jabatan = models.DateField(blank=False)
     tmt_jabatan = models.CharField(blank=False, max_length=200)
     file_sk_jabatan = models.FileField(upload_to="media/jabatan/")
-    user = models.OneToOneField(
+    user = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=False, default=None
     )
 
@@ -164,7 +164,7 @@ class Pangkat(models.Model):
     tanggal_sk_pangkat = models.DateField(blank=False)
     tmt_pangkat = models.CharField(blank=False, max_length=200)
     file_sk_pangkat = models.FileField(upload_to="media/pangkat/")
-    user = models.OneToOneField(
+    user = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=False, default=None
     )
 
@@ -196,6 +196,6 @@ class AngkaKredit(models.Model):
         blank=False, max_length=200, choices=MasaPenilaian.choices
     )
     file_pak = models.FileField(upload_to="media/angkaKredit/")
-    user = models.OneToOneField(
+    user = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=False, default=None
     )

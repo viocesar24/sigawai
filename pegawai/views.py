@@ -4,7 +4,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.core.files.storage import FileSystemStorage, default_storage
-from .models import Pegawai, Pendidikan
+from django.http import HttpResponse, Http404
+from .models import Pegawai, Pendidikan, Jabatan
 import os
 
 
@@ -20,6 +21,7 @@ def profile(request):
     # Mendapatkan username user yang sedang login
     username = request.user.username
 
+    ##### PEGAWAI #####
     # Mendapatkan data pegawai dari user yang sedang login
     try:
         # Mengambil data tabel pegawai
@@ -31,10 +33,13 @@ def profile(request):
         pegawai = None
         tanggal_lahir_pegawai = None
 
+    ##### PENDIDIKAN #####
     # Mendapatkan data pendidikan dari user yang sedang login
     try:
         # Mengambil data tabel pendidikan
-        pendidikan = Pendidikan.objects.filter(user=request.user)
+        pendidikan = Pendidikan.objects.filter(user=request.user).order_by(
+            "-tanggal_terbit_ijazah_pendidikan"
+        )
     except Pendidikan.DoesNotExist:
         # Jika data tabel pendidikan tidak ada maka return Null/None
         pendidikan = None
@@ -58,6 +63,42 @@ def profile(request):
 
     # Mengambil data pilihan tingkat pendidikan
     pilihan_tingkat_pendidikan = Pendidikan.TingkatPendidikan.choices
+
+    ##### JABATAN #####
+    # Mendapatkan data jabatan dari user yang sedang login
+    try:
+        # Mengambil data tabel jabatan
+        jabatan = Jabatan.objects.filter(user=request.user).order_by(
+            "-tanggal_sk_jabatan"
+        )
+        jabatan_obyek_terakhir = Jabatan.objects.filter(user=request.user).order_by(
+            "-tanggal_sk_jabatan"
+        )[:1]
+        if jabatan_obyek_terakhir.exists():
+            jabatan_terakhir = jabatan[0]
+        else:
+            jabatan_terakhir = None
+    except Jabatan.DoesNotExist:
+        # Jika data tabel jabatan tidak ada maka return Null/None
+        jabatan = None
+        jabatan_terakhir = None
+
+    # Inisialisasi file_exists_jabatan sebagai False
+    file_exists_jabatan = False
+
+    if jabatan.exists():
+        # Ubah format tanggal sk jabatan menjadi "YYYY/MM/DD"
+        for jab in jabatan:
+            jab.tanggal_sk_jabatan = jab.tanggal_sk_jabatan.strftime("%Y-%m-%d")
+            if jab and jab.file_sk_jabatan:
+                file_exists_jabatan = default_storage.exists(jab.file_sk_jabatan.name)
+            else:
+                # Keluar dari loop jika file_exists_jabatan telah ditemukan
+                break
+
+    # Mengambil data pilihan jabatan
+    pilihan_jabatan = Jabatan.NamaJabatan.choices
+
     context = {
         "username": username,
         "pegawai": pegawai,
@@ -65,6 +106,10 @@ def profile(request):
         "pendidikan": pendidikan,
         "pilihan_tingkat_pendidikan": pilihan_tingkat_pendidikan,
         "file_exists_pendidikan": file_exists_pendidikan,
+        "jabatan": jabatan,
+        "jabatan_terakhir": jabatan_terakhir,
+        "pilihan_jabatan": pilihan_jabatan,
+        "file_exists_jabatan": file_exists_jabatan,
     }
     return render(request, "pegawai/profile.html", context)
 
@@ -180,6 +225,17 @@ def add_pendidikan(request):
         ]
         file_ijazah_pendidikan = request.FILES["file_ijazah_pendidikan"]
 
+        # Validasi tipe file
+        if not file_ijazah_pendidikan.name.endswith(".pdf"):
+            messages.error(request, "File harus berformat PDF.")
+            return redirect("profile")
+
+        # Validasi ukuran file
+        max_size = 500 * 1024  # 500KB
+        if file_ijazah_pendidikan.size > max_size:
+            messages.error(request, "Ukuran file melebihi 500KB.")
+            return redirect("profile")
+
         # Dapatkan username dari pengguna yang saat ini masuk
         username = request.user.username
         # Ubah nama file yang akan diunggah
@@ -234,6 +290,17 @@ def edit_pendidikan(request, id_pendidikan):
             "tanggal_terbit_ijazah_pendidikan"
         ]
         file_ijazah_pendidikan = request.FILES["file_ijazah_pendidikan"]
+
+        # Validasi tipe file
+        if not file_ijazah_pendidikan.name.endswith(".pdf"):
+            messages.error(request, "File harus berformat PDF.")
+            return redirect("profile")
+
+        # Validasi ukuran file
+        max_size = 500 * 1024  # 500KB
+        if file_ijazah_pendidikan.size > max_size:
+            messages.error(request, "Ukuran file melebihi 500KB.")
+            return redirect("profile")
 
         # Dapatkan username dari pengguna yang saat ini masuk
         username = request.user.username
@@ -295,3 +362,193 @@ def delete_pendidikan(request, id_pendidikan):
         messages.warning(request, "Data Pendidikan tidak ditemukan.")
 
     return redirect("profile")
+
+
+@login_required
+def download_ijazah(request, id_pendidikan):
+    pendidikan = get_object_or_404(Pendidikan, id_pendidikan=id_pendidikan)
+
+    # Pastikan pengguna yang mengakses adalah pemilik data ijazah
+    if pendidikan.user != request.user:
+        messages.error(request, "Anda tidak memiliki izin untuk mengunduh ijazah ini.")
+        return redirect("profile")
+
+    # Cek apakah file_ijazah_pendidikan ada atau tidak
+    if not pendidikan.file_ijazah_pendidikan:
+        raise Http404("File Ijazah tidak ditemukan")
+
+    # Dapatkan path lengkap ke file ijazah
+    file_path = pendidikan.file_ijazah_pendidikan.path
+
+    # Buka file sebagai binary dan kirim sebagai HTTP response
+    with open(file_path, "rb") as file:
+        response = HttpResponse(
+            file.read(), content_type="application/pdf"
+        )  # Sesuaikan content_type sesuai tipe file
+
+        # Mengatur header untuk attachment agar file dapat diunduh
+        response[
+            "Content-Disposition"
+        ] = f"attachment; filename={pendidikan.file_ijazah_pendidikan.name}"
+
+        return response
+
+
+@login_required
+def add_jabatan(request):
+    user_id = request.user.id
+
+    if request.method == "POST" and request.FILES["file_sk_jabatan"]:
+        nama_jabatan = request.POST["nama_jabatan"]
+        nomor_sk_jabatan = request.POST["nomor_sk_jabatan"]
+        tanggal_sk_jabatan = request.POST["tanggal_sk_jabatan"]
+        tmt_jabatan = request.POST["tmt_jabatan"]
+        file_sk_jabatan = request.FILES["file_sk_jabatan"]
+
+        # Validasi tipe file
+        if not file_sk_jabatan.name.endswith(".pdf"):
+            messages.error(request, "File harus berformat PDF.")
+            return redirect("profile")
+
+        # Validasi ukuran file
+        max_size = 500 * 1024  # 500KB
+        if file_sk_jabatan.size > max_size:
+            messages.error(request, "Ukuran file melebihi 500KB.")
+            return redirect("profile")
+
+        # Dapatkan username dari pengguna yang saat ini masuk
+        username = request.user.username
+        # Ubah nama file yang akan diunggah
+        new_file_name = f"{username}_jabatan_{nama_jabatan}{file_sk_jabatan.name[file_sk_jabatan.name.rfind('.'):]}"
+        fs = FileSystemStorage()
+
+        try:
+            Jabatan.objects.get(
+                nama_jabatan=nama_jabatan,
+                nomor_sk_jabatan=nomor_sk_jabatan,
+                user_id=user_id,
+            )
+            messages.warning(
+                request,
+                "Data Jabatan sudah ada. Tolong gunakan fungsi edit.",
+            )
+            return redirect("profile")
+        except Jabatan.DoesNotExist:
+            Jabatan.objects.create(
+                nama_jabatan=nama_jabatan,
+                nomor_sk_jabatan=nomor_sk_jabatan,
+                tanggal_sk_jabatan=tanggal_sk_jabatan,
+                tmt_jabatan=tmt_jabatan,
+                file_sk_jabatan=fs.save(
+                    f"media/jabatan/{new_file_name}", file_sk_jabatan
+                ),
+                user_id=user_id,
+            )
+            messages.success(request, "Data Jabatan berhasil dibuat.")
+            return redirect("profile")
+
+    return render(request, "pegawai/profile.html")
+
+
+@login_required
+def edit_jabatan(request, id_jabatan):
+    user_id = request.user.id
+
+    if request.method == "POST" and request.FILES["file_sk_jabatan"]:
+        nama_jabatan = request.POST["nama_jabatan"]
+        nomor_sk_jabatan = request.POST["nomor_sk_jabatan"]
+        tanggal_sk_jabatan = request.POST["tanggal_sk_jabatan"]
+        tmt_jabatan = request.POST["tmt_jabatan"]
+        file_sk_jabatan = request.FILES["file_sk_jabatan"]
+
+        # Validasi tipe file
+        if not file_sk_jabatan.name.endswith(".pdf"):
+            messages.error(request, "File harus berformat PDF.")
+            return redirect("profile")
+
+        # Validasi ukuran file
+        max_size = 500 * 1024  # 500KB
+        if file_sk_jabatan.size > max_size:
+            messages.error(request, "Ukuran file melebihi 500KB.")
+            return redirect("profile")
+
+        # Dapatkan username dari pengguna yang saat ini masuk
+        username = request.user.username
+        # Ubah nama file yang akan diunggah
+        new_file_name = f"{username}_jabatan_{nama_jabatan}{file_sk_jabatan.name[file_sk_jabatan.name.rfind('.'):]}"
+        fs = FileSystemStorage()
+
+        try:
+            jabatan = get_object_or_404(Jabatan, id_jabatan=id_jabatan, user=user_id)
+            # Hapus file dan data jabatan sebelumnya
+            if jabatan.file_sk_jabatan:
+                old_file_path = jabatan.file_sk_jabatan.path
+                if os.path.exists(old_file_path):
+                    os.remove(old_file_path)
+
+            # Update data jabatan
+            jabatan.nama_jabatan = nama_jabatan
+            jabatan.nomor_sk_jabatan = nomor_sk_jabatan
+            jabatan.tanggal_sk_jabatan = tanggal_sk_jabatan
+            jabatan.tmt_jabatan = tmt_jabatan
+            jabatan.file_sk_jabatan = fs.save(
+                f"media/jabatan/{new_file_name}", file_sk_jabatan
+            )
+            jabatan.save()
+            messages.success(request, "Data Jabatan berhasil diubah.")
+        except Jabatan.DoesNotExist:
+            messages.warning(
+                request, "Data Jabatan tidak ditemukan. Tolong gunakan fungsi buat."
+            )
+
+        return redirect("profile")
+
+    return render(request, "pegawai/profile.html")
+
+
+@login_required
+def delete_jabatan(request, id_jabatan):
+    jabatan = get_object_or_404(Jabatan, id_jabatan=id_jabatan, user=request.user)
+
+    try:
+        # Hapus file dan data jabatan
+        if jabatan.file_sk_jabatan:
+            old_file_path = jabatan.file_sk_jabatan.path
+            if os.path.exists(old_file_path):
+                os.remove(old_file_path)
+        jabatan.delete()
+        messages.success(request, "Data Jabatan berhasil dihapus.")
+    except Jabatan.DoesNotExist:
+        messages.warning(request, "Data Jabatan tidak ditemukan.")
+
+    return redirect("profile")
+
+
+@login_required
+def download_sk_jabatan(request, id_jabatan):
+    jabatan = get_object_or_404(Jabatan, id_jabatan=id_jabatan)
+
+    # Pastikan pengguna yang mengakses adalah pemilik data SK
+    if jabatan.user != request.user:
+        messages.error(request, "Anda tidak memiliki izin untuk mengunduh SK ini.")
+        return redirect("profile")
+
+    # Cek apakah file_sk_jabatan ada atau tidak
+    if not jabatan.file_sk_jabatan:
+        raise Http404("File SK tidak ditemukan")
+
+    # Dapatkan path lengkap ke file SK
+    file_path = jabatan.file_sk_jabatan.path
+
+    # Buka file sebagai binary dan kirim sebagai HTTP response
+    with open(file_path, "rb") as file:
+        response = HttpResponse(
+            file.read(), content_type="application/pdf"
+        )  # Sesuaikan content_type sesuai tipe file
+
+        # Mengatur header untuk attachment agar file dapat diunduh
+        response[
+            "Content-Disposition"
+        ] = f"attachment; filename={jabatan.file_sk_jabatan.name}"
+
+        return response

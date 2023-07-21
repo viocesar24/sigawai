@@ -91,7 +91,7 @@ class Jabatan(models.Model):
     )
     nomor_sk_jabatan = models.CharField(blank=False, max_length=200)
     tanggal_sk_jabatan = models.DateField(blank=False)
-    tmt_jabatan = models.CharField(blank=False, max_length=200)
+    tmt_jabatan = models.DateField(blank=False)
     file_sk_jabatan = models.FileField(upload_to="media/jabatan/")
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=False, default=None
@@ -159,10 +159,9 @@ class Pangkat(models.Model):
         choices=KodePangkat.choices,
         default=KodePangkat.IA,
     )
-    golongan_ruang_pangkat = models.CharField(blank=False, max_length=200)
     nomor_sk_pangkat = models.CharField(blank=False, max_length=200)
     tanggal_sk_pangkat = models.DateField(blank=False)
-    tmt_pangkat = models.CharField(blank=False, max_length=200)
+    tmt_pangkat = models.DateField(blank=False)
     file_sk_pangkat = models.FileField(upload_to="media/pangkat/")
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=False, default=None

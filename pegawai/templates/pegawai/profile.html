@@ -118,7 +118,7 @@
                                                         <label for="floatingSelectStatusPegawai">Status Pegawai</label>
                                                     </div>
                                                     <div class="form-floating mb-1">
-                                                        <input name="nip_pegawai" type="text" class="form-control" id="floatingInputNIP" placeholder="Nomor Induk Pegawai" value="{{ pegawai.nip_pegawai }}" required>
+                                                        <input name="nip_pegawai" type="number" class="form-control" id="floatingInputNIP" placeholder="Nomor Induk Pegawai" value="{{ pegawai.nip_pegawai }}" required>
                                                         <label for="floatingInputNIP">NIP</label>
                                                     </div>
                                                     <div class="form-floating mb-1">
@@ -184,7 +184,7 @@
                                     <i class="bi bi-bookmark-star"></i>
                                     Pangkat & Golongan
                                 </h5>
-                                <p class="card-text text-body-tertiary fs-6 fw-lighter">Belum Ada</p>
+                                <p class="card-text text-body-tertiary fs-6 fw-lighter">{{ pangkat_terakhir.get_nama_pangkat_display }} / {{ pangkat_terakhir.nama_pangkat }}</p>
                             </div>
                             <div class="row border-bottom mb-3">
                                 <h5>
@@ -204,7 +204,7 @@
                             <div class="nav nav-tabs card-header-tabs" id="nav-tab" role="tablist">
                                 <button class="nav-link active" id="nav-pendidikan-tab" data-bs-toggle="tab" data-bs-target="#nav-pendidikan" type="button" role="tab" aria-controls="nav-pendidikan" aria-selected="true">Riwayat Pendidikan</button>
                                 <button class="nav-link" id="nav-jabatan-tab" data-bs-toggle="tab" data-bs-target="#nav-jabatan" type="button" role="tab" aria-controls="nav-jabatan" aria-selected="false">Riwayat Jabatan</button>
-                                <button class="nav-link" id="nav-pangkat-tab" data-bs-toggle="tab" data-bs-target="#nav-pangkat" type="button" role="tab" aria-controls="nav-pangkat" aria-selected="false">Pangkat & Golongan</button>
+                                <button class="nav-link" id="nav-pangkat-tab" data-bs-toggle="tab" data-bs-target="#nav-pangkat" type="button" role="tab" aria-controls="nav-pangkat" aria-selected="false">Riwayat Pangkat & Golongan</button>
                                 <button class="nav-link" id="nav-angkakredit-tab" data-bs-toggle="tab" data-bs-target="#nav-angkakredit" type="button" role="tab" aria-controls="nav-angkakredit" aria-selected="false">Angka Kredit</button>
                                 <button class="nav-link" id="nav-diklat-tab" data-bs-toggle="tab" data-bs-target="#nav-diklat" type="button" role="tab" aria-controls="nav-diklat" aria-selected="false">Riwayat Diklat</button>
                             </div>
@@ -213,6 +213,7 @@
                     <div class="card-body">
                         {% if pegawai %}
                         <div class="tab-content" id="nav-tabContent">
+                            <!-- TAB PENDIDIKAN -->
                             <div class="tab-pane fade show active" id="nav-pendidikan" role="tabpanel" aria-labelledby="nav-pendidikan-tab" tabindex="0">
                                 <div class="row">
                                     <div class="col d-flex align-items-center">
@@ -232,22 +233,22 @@
                                             <form method="post" action="{% url 'add_pendidikan' %}" enctype="multipart/form-data">
                                                 {% csrf_token %}
                                                 <div class="modal-header">
-                                                    <h1 class="modal-title fs-5" id="tambahPendidikanLabel">Edit Riwayat Pendidikan</h1>
+                                                    <h1 class="modal-title fs-5" id="tambahPendidikanLabel">Tambah Riwayat Pendidikan</h1>
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                 </div>
                                                 <div class="modal-body">
                                                     {% csrf_token %}
                                                     <div class="form-floating mb-1">
-                                                        <select name="tingkat_pendidikan" class="form-select" id="floatingSelectTingkatPendidikan" aria-label="Pilih Tingkat Pendidikan" required>
+                                                        <select name="tingkat_pendidikan" class="form-select" id="floatingSelectTingkatPendidikan" aria-label="Pilih Tingkat Pendidikan*" required>
                                                             {% for pilihan in pilihan_tingkat_pendidikan %}
                                                                 <option value="{{ pilihan.0 }}">{{ pilihan.1 }}</option>
                                                             {% endfor %}
                                                         </select>
-                                                        <label for="floatingSelectTingkatPendidikan">Tingkat Pendidikan</label>
+                                                        <label for="floatingSelectTingkatPendidikan">Tingkat Pendidikan*</label>
                                                     </div>
                                                     <div class="form-floating mb-1">
-                                                        <input name="lembaga_pendidikan" type="text" class="form-control" id="floatingLembagaPendidikan" placeholder="Lembaga Pendidikan" required>
-                                                        <label for="floatingLembagaPendidikan">Lembaga Pendidikan</label>
+                                                        <input name="lembaga_pendidikan" type="text" class="form-control" id="floatingLembagaPendidikan" placeholder="Lembaga Pendidikan*" required>
+                                                        <label for="floatingLembagaPendidikan">Lembaga Pendidikan*</label>
                                                     </div>
                                                     <div class="form-floating mb-1">
                                                         <input name="fakultas_pendidikan" type="text" class="form-control" id="floatingFakultasPendidikan" placeholder="Fakultas Pendidikan">
@@ -266,16 +267,16 @@
                                                         <label for="floatingGelarBelakangPendidikan">Gelar Belakang Pendidikan</label>
                                                     </div>
                                                     <div class="form-floating mb-1">
-                                                        <input name="nomor_seri_ijazah_pendidikan" type="text" class="form-control" id="floatingNomorSeriIjazahPendidikan" placeholder="Nomor Seri Ijazah Pendidikan" required>
-                                                        <label for="floatingNomorSeriIjazahPendidikan">Nomor Seri Ijazah Pendidikan</label>
+                                                        <input name="nomor_seri_ijazah_pendidikan" type="text" class="form-control" id="floatingNomorSeriIjazahPendidikan" placeholder="Nomor Seri Ijazah Pendidikan*" required>
+                                                        <label for="floatingNomorSeriIjazahPendidikan">Nomor Seri Ijazah Pendidikan*</label>
                                                     </div>
                                                     <div class="form-floating mb-1">
-                                                        <input name="tanggal_terbit_ijazah_pendidikan" type="date" class="form-control" id="floatingTanggalTerbitIjazahPendidikan" placeholder="Tanggal Terbit Ijazah Pendidikan" required>
-                                                        <label for="floatingTanggalTerbitIjazahPendidikan">Tanggal Terbit Ijazah Pendidikan</label>
+                                                        <input name="tanggal_terbit_ijazah_pendidikan" type="date" class="form-control" id="floatingTanggalTerbitIjazahPendidikan" placeholder="Tanggal Terbit Ijazah Pendidikan*" required>
+                                                        <label for="floatingTanggalTerbitIjazahPendidikan">Tanggal Terbit Ijazah Pendidikan*</label>
                                                     </div>
                                                     <div class="form-floating mb-1">
-                                                        <input name="file_ijazah_pendidikan" type="file" class="form-control" id="floatingFileIjazahPendidikan" required>
-                                                        <label for="floatingFileIjazahPendidikan">File Ijazah Pendidikan</label>
+                                                        <input name="file_ijazah_pendidikan" type="file" class="form-control" id="floatingFileIjazahPendidikan*" required>
+                                                        <label for="floatingFileIjazahPendidikan">File Ijazah Pendidikan*</label>
                                                     </div>
                                                 </div>
                                                 <div class="modal-footer">
@@ -290,9 +291,9 @@
                                     <thead>
                                         <tr>
                                             <th scope="col">#</th>
-                                            <th scope="col">Tingkat Pendidikan</th>
-                                            <th scope="col">Lembaga Pendidikan</th>
-                                            <th scope="col">Jurusan Pendidikan</th>
+                                            <th scope="col">Jenjang</th>
+                                            <th scope="col">Lembaga</th>
+                                            <th scope="col">Jurusan</th>
                                             <th scope="col">Tanggal Terbit Ijazah</th>
                                             <th scope="col">File Ijazah</th>
                                             <th scope="col">Aksi</th>
@@ -330,15 +331,15 @@
                                                                 <div class="modal-body">
                                                                     {% csrf_token %}
                                                                     <div class="form-floating mb-1">
-                                                                        <select name="tingkat_pendidikan" class="form-select" id="floatingSelectTingkatPendidikan" aria-label="Pilih Tingkat Pendidikan" required>
+                                                                        <select name="tingkat_pendidikan" class="form-select" id="floatingSelectTingkatPendidikan" aria-label="Pilih Tingkat Pendidikan*" required>
                                                                             {% for pilihan in pilihan_tingkat_pendidikan %}
                                                                                 <option value="{{ pilihan.0 }}" {% if pend and pend.tingkat_pendidikan == pilihan.0 %}selected{% endif %}>{{ pilihan.1 }}</option>
                                                                             {% endfor %}
                                                                         </select>
-                                                                        <label for="floatingSelectTingkatPendidikan">Tingkat Pendidikan</label>
+                                                                        <label for="floatingSelectTingkatPendidikan">Tingkat Pendidikan*</label>
                                                                     </div>
                                                                     <div class="form-floating mb-1">
-                                                                        <input name="lembaga_pendidikan" type="text" class="form-control" id="floatingLembagaPendidikan" placeholder="Lembaga Pendidikan" value="{{ pend.lembaga_pendidikan }}" required>
+                                                                        <input name="lembaga_pendidikan" type="text" class="form-control" id="floatingLembagaPendidikan" placeholder="Lembaga Pendidikan*" value="{{ pend.lembaga_pendidikan }}" required>
                                                                         <label for="floatingLembagaPendidikan">Lembaga Pendidikan</label>
                                                                     </div>
                                                                     <div class="form-floating mb-1">
@@ -358,16 +359,16 @@
                                                                         <label for="floatingGelarBelakangPendidikan">Gelar Belakang Pendidikan</label>
                                                                     </div>
                                                                     <div class="form-floating mb-1">
-                                                                        <input name="nomor_seri_ijazah_pendidikan" type="text" class="form-control" id="floatingNomorSeriIjazahPendidikan" placeholder="Nomor Seri Ijazah Pendidikan" value="{{ pend.nomor_seri_ijazah_pendidikan }}" required>
-                                                                        <label for="floatingNomorSeriIjazahPendidikan">Nomor Seri Ijazah Pendidikan</label>
+                                                                        <input name="nomor_seri_ijazah_pendidikan" type="text" class="form-control" id="floatingNomorSeriIjazahPendidikan" placeholder="Nomor Seri Ijazah Pendidikan*" value="{{ pend.nomor_seri_ijazah_pendidikan }}" required>
+                                                                        <label for="floatingNomorSeriIjazahPendidikan">Nomor Seri Ijazah Pendidikan*</label>
                                                                     </div>
                                                                     <div class="form-floating mb-1">
-                                                                        <input name="tanggal_terbit_ijazah_pendidikan" type="date" class="form-control" id="floatingTanggalTerbitIjazahPendidikan" placeholder="Tanggal Terbit Ijazah Pendidikan" value="{{ pend.tanggal_terbit_ijazah_pendidikan }}" required>
-                                                                        <label for="floatingTanggalTerbitIjazahPendidikan">Tanggal Terbit Ijazah Pendidikan</label>
+                                                                        <input name="tanggal_terbit_ijazah_pendidikan" type="date" class="form-control" id="floatingTanggalTerbitIjazahPendidikan" placeholder="Tanggal Terbit Ijazah Pendidikan*" value="{{ pend.tanggal_terbit_ijazah_pendidikan }}" required>
+                                                                        <label for="floatingTanggalTerbitIjazahPendidikan">Tanggal Terbit Ijazah Pendidikan*</label>
                                                                     </div>
                                                                     <div class="form-floating mb-1">
                                                                         <input name="file_ijazah_pendidikan" type="file" class="form-control" id="floatingFileIjazahPendidikan" required>
-                                                                        <label for="floatingFileIjazahPendidikan">File Ijazah Pendidikan</label>
+                                                                        <label for="floatingFileIjazahPendidikan">File Ijazah Pendidikan*</label>
                                                                     </div>
                                                                     <!-- Tampilkan pesan jika data pendidikan ada dan File Ijazah Pendidikan sudah diunggah -->
                                                                     {% if pend %}
@@ -437,6 +438,7 @@
                                     </tbody>
                                 </table>
                             </div>
+                            <!-- TAB JABATAN -->
                             <div class="tab-pane fade" id="nav-jabatan" role="tabpanel" aria-labelledby="nav-jabatan-tab" tabindex="0">
                                 <div class="row">
                                     <div class="col d-flex align-items-center">
@@ -456,34 +458,34 @@
                                             <form method="post" action="{% url 'add_jabatan' %}" enctype="multipart/form-data">
                                                 {% csrf_token %}
                                                 <div class="modal-header">
-                                                    <h1 class="modal-title fs-5" id="tambahJabatanLabel">Edit Riwayat Jabatan</h1>
+                                                    <h1 class="modal-title fs-5" id="tambahJabatanLabel">Tambah Riwayat Jabatan</h1>
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                 </div>
                                                 <div class="modal-body">
                                                     {% csrf_token %}
                                                     <div class="form-floating mb-1">
-                                                        <select name="nama_jabatan" class="form-select" id="floatingSelectNamaJabatan" aria-label="Pilih Jabatan" required>
+                                                        <select name="nama_jabatan" class="form-select" id="floatingSelectNamaJabatan" aria-label="Pilih Jabatan*" required>
                                                             {% for pilihan in pilihan_jabatan %}
                                                                 <option value="{{ pilihan.0 }}">{{ pilihan.1 }}</option>
                                                             {% endfor %}
                                                         </select>
-                                                        <label for="floatingSelectNamaJabatan">Jabatan</label>
+                                                        <label for="floatingSelectNamaJabatan">Pilih Jabatan*</label>
                                                     </div>
                                                     <div class="form-floating mb-1">
-                                                        <input name="nomor_sk_jabatan" type="text" class="form-control" id="floatingNomorSKJabatan" placeholder="Nomor SK Jabatan" required>
-                                                        <label for="floatingNomorSKJabatan">Nomor SK Jabatan</label>
+                                                        <input name="nomor_sk_jabatan" type="text" class="form-control" id="floatingNomorSKJabatan" placeholder="Nomor SK Jabatan*" required>
+                                                        <label for="floatingNomorSKJabatan">Nomor SK Jabatan*</label>
                                                     </div>
                                                     <div class="form-floating mb-1">
-                                                        <input name="tanggal_sk_jabatan" type="date" class="form-control" id="floatingTanggalSKJabatan" placeholder="Tanggal SK Jabatan" required>
-                                                        <label for="floatingTanggalSKJabatan">Tanggal SK Jabatan</label>
+                                                        <input name="tanggal_sk_jabatan" type="date" class="form-control" id="floatingTanggalSKJabatan" placeholder="Tanggal SK Jabatan*" required>
+                                                        <label for="floatingTanggalSKJabatan">Tanggal SK Jabatan*</label>
                                                     </div>
                                                     <div class="form-floating mb-1">
-                                                        <input name="tmt_jabatan" type="text" class="form-control" id="floatingTMTJabatan" placeholder="TMT Jabatan" required>
-                                                        <label for="floatingTMTJabatan">TMT Jabatan</label>
+                                                        <input name="tmt_jabatan" type="date" class="form-control" id="floatingTMTJabatan" placeholder="TMT Jabatan*" required>
+                                                        <label for="floatingTMTJabatan">TMT Jabatan*</label>
                                                     </div>
                                                     <div class="form-floating mb-1">
-                                                        <input name="file_sk_jabatan" type="file" class="form-control" id="floatingFileSKJabatan" required>
-                                                        <label for="floatingFileSKJabatan">File SK Jabatan</label>
+                                                        <input name="file_sk_jabatan" type="file" class="form-control" id="floatingFileSKJabatan*" required>
+                                                        <label for="floatingFileSKJabatan">File SK Jabatan*</label>
                                                     </div>
                                                 </div>
                                                 <div class="modal-footer">
@@ -499,10 +501,10 @@
                                         <tr>
                                             <th scope="col">#</th>
                                             <th scope="col">Jabatan</th>
-                                            <th scope="col">Nomor SK Jabatan</th>
-                                            <th scope="col">Tanggal SK Jabatan</th>
-                                            <th scope="col">TMT Jabatan</th>
-                                            <th scope="col">File SK Jabatan</th>
+                                            <th scope="col">Nomor SK</th>
+                                            <th scope="col">Tanggal SK</th>
+                                            <th scope="col">TMT</th>
+                                            <th scope="col">File SK</th>
                                             <th scope="col">Aksi</th>
                                         </tr>
                                     </thead>
@@ -538,28 +540,28 @@
                                                                 <div class="modal-body">
                                                                     {% csrf_token %}
                                                                     <div class="form-floating mb-1">
-                                                                        <select name="nama_jabatan" class="form-select" id="floatingSelectNamaJabatan" aria-label="Pilih Jabatan" required>
+                                                                        <select name="nama_jabatan" class="form-select" id="floatingSelectNamaJabatan" aria-label="Pilih Jabatan*" required>
                                                                             {% for pilihan in pilihan_jabatan %}
                                                                                 <option value="{{ pilihan.0 }}" {% if jab and jab.nama_jabatan == pilihan.0 %}selected{% endif %}>{{ pilihan.1 }}</option>
                                                                             {% endfor %}
                                                                         </select>
-                                                                        <label for="floatingSelectNamaJabatan">Jabatan</label>
+                                                                        <label for="floatingSelectNamaJabatan">Jabatan*</label>
                                                                     </div>
                                                                     <div class="form-floating mb-1">
-                                                                        <input name="nomor_sk_jabatan" type="text" class="form-control" id="floatingNomorSKJabatan" placeholder="Nomor SK Jabatan" value="{{ jab.nomor_sk_jabatan }}" required>
-                                                                        <label for="floatingNomorSKJabatan">Nomor SK Jabatan</label>
+                                                                        <input name="nomor_sk_jabatan" type="text" class="form-control" id="floatingNomorSKJabatan" placeholder="Nomor SK Jabatan*" value="{{ jab.nomor_sk_jabatan }}" required>
+                                                                        <label for="floatingNomorSKJabatan">Nomor SK Jabatan*</label>
                                                                     </div>
                                                                     <div class="form-floating mb-1">
-                                                                        <input name="tanggal_sk_jabatan" type="date" class="form-control" id="floatingTanggalSKJabatan" placeholder="Tanggal SK Jabatan" value="{{ jab.tanggal_sk_jabatan }}" required>
-                                                                        <label for="floatingTanggalSKJabatan">Tanggal SK Jabatan</label>
+                                                                        <input name="tanggal_sk_jabatan" type="date" class="form-control" id="floatingTanggalSKJabatan" placeholder="Tanggal SK Jabatan*" value="{{ jab.tanggal_sk_jabatan }}" required>
+                                                                        <label for="floatingTanggalSKJabatan">Tanggal SK Jabatan*</label>
                                                                     </div>
                                                                     <div class="form-floating mb-1">
-                                                                        <input name="tmt_jabatan" type="text" class="form-control" id="floatingTMTJabatan" placeholder="TMT Jabatan" value="{{ jab.tmt_jabatan }}" required>
-                                                                        <label for="floatingTMTJabatan">TMT Jabatan</label>
+                                                                        <input name="tmt_jabatan" type="text" class="form-control" id="floatingTMTJabatan" placeholder="TMT Jabatan*" value="{{ jab.tmt_jabatan }}" required>
+                                                                        <label for="floatingTMTJabatan">TMT Jabatan*</label>
                                                                     </div>
                                                                     <div class="form-floating mb-1">
                                                                         <input name="file_sk_jabatan" type="file" class="form-control" id="floatingFileSKJabatan" required>
-                                                                        <label for="floatingFileSKJabatan">File SK Jabatan</label>
+                                                                        <label for="floatingFileSKJabatan">File SK Jabatan*</label>
                                                                     </div>
                                                                     <!-- Tampilkan pesan jika data jabatan ada dan File SK Jabatan sudah diunggah -->
                                                                     {% if jab %}
@@ -629,9 +631,587 @@
                                     </tbody>
                                 </table>
                             </div>
-                            <div class="tab-pane fade" id="nav-pangkat" role="tabpanel" aria-labelledby="nav-pangkat-tab" tabindex="0">...</div>
-                            <div class="tab-pane fade" id="nav-angkakredit" role="tabpanel" aria-labelledby="nav-angkakredit-tab" tabindex="0">...</div>
-                            <div class="tab-pane fade" id="nav-diklat" role="tabpanel" aria-labelledby="nav-diklat-tab" tabindex="0">...</div>
+                            <!-- TAB PANGKAT & GOLONGAN -->
+                            <div class="tab-pane fade" id="nav-pangkat" role="tabpanel" aria-labelledby="nav-pangkat-tab" tabindex="0">
+                                <div class="row">
+                                    <div class="col d-flex align-items-center">
+                                        <h3 class="card-title">Tabel Riwayat Pangkat & Golongan</h3>
+                                    </div>
+                                    <div class="col d-flex justify-content-end">
+                                        <!-- Button trigger modal tambah riwayat pangkat -->
+                                        <button type="button" class="btn btn-primary my-3" data-bs-toggle="modal" data-bs-target="#tambahPangkat">
+                                            <i class="bi bi-plus-square"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <!-- Modal tambah riwayat pangkat -->
+                                <div class="modal fade" id="tambahPangkat" tabindex="-1" aria-labelledby="tambahPangkatLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                                        <div class="modal-content">
+                                            <form method="post" action="{% url 'add_pangkat' %}" enctype="multipart/form-data">
+                                                {% csrf_token %}
+                                                <div class="modal-header">
+                                                    <h1 class="modal-title fs-5" id="tambahPangkatLabel">Tambah Riwayat Pangkat & Golongan</h1>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    {% csrf_token %}
+                                                    <div class="form-floating mb-1">
+                                                        <select name="nama_pangkat" class="form-select" id="floatingSelectNamaPangkat" aria-label="Pilih Pangkat & Golongan*" required>
+                                                            {% for pilihan in pilihan_pangkat %}
+                                                                <option value="{{ pilihan.0 }}">{{ pilihan.0 }} / {{ pilihan.1 }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                        <label for="floatingSelectNamaPangkat">Pilih Pangkat & Golongan*</label>
+                                                    </div>
+                                                    <div class="form-floating mb-1">
+                                                        <input name="nomor_sk_pangkat" type="text" class="form-control" id="floatingNomorSKPangkat" placeholder="Nomor SK Pangkat & Golongan*" required>
+                                                        <label for="floatingNomorSKPangkat">Nomor SK Pangkat & Golongan*</label>
+                                                    </div>
+                                                    <div class="form-floating mb-1">
+                                                        <input name="tanggal_sk_pangkat" type="date" class="form-control" id="floatingTanggalSKPangkat" placeholder="Tanggal SK Pangkat & Golongan*" required>
+                                                        <label for="floatingTanggalSKPangkat">Tanggal SK Pangkat & Golongan*</label>
+                                                    </div>
+                                                    <div class="form-floating mb-1">
+                                                        <input name="tmt_pangkat" type="date" class="form-control" id="floatingTMTPangkat" placeholder="TMT Pangkat & Golongan*" required>
+                                                        <label for="floatingTMTPangkat">TMT Pangkat & Golongan*</label>
+                                                    </div>
+                                                    <div class="form-floating mb-1">
+                                                        <input name="file_sk_pangkat" type="file" class="form-control" id="floatingFileSKPangkat" required>
+                                                        <label for="floatingFileSKPangkat">File SK Pangkat & Golongan*</label>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                                                    <button type="submit" class="btn btn-primary">Simpan</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                <table id="tabelPangkat" class="table">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">#</th>
+                                            <th scope="col">Pangkat & Golongan</th>
+                                            <th scope="col">Nomor SK</th>
+                                            <th scope="col">Tanggal SK</th>
+                                            <th scope="col">TMT</th>
+                                            <th scope="col">File SK</th>
+                                            <th scope="col">Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="table-group-divider">
+                                        {% if pangkat %}
+                                        {% for pang in pangkat %}
+                                        <tr>
+                                            <th class="align-middle" scope="row">{{ forloop.counter }}</th>
+                                            <td class="align-middle">{{ pang.get_nama_pangkat_display }} / {{ pang.nama_pangkat }}</td>
+                                            <td class="align-middle">{{ pang.nomor_sk_pangkat }}</td>
+                                            <td class="align-middle">{{ pang.tanggal_sk_pangkat }}</td>
+                                            <td class="align-middle">{{ pang.tmt_pangkat }}</td>
+                                            <td class="align-middle">
+                                                <!-- Button trigger link lihat file sk pangkat -->
+                                                <a href="{% url 'download_sk_pangkat' pang.id_pangkat %}" class="btn" target="_blank">
+                                                    <i class="bi bi-box-arrow-up-right"></i>
+                                                </a>
+                                            </td>
+                                            <td class="align-middle">
+                                                <!-- Button trigger modal edit pangkat -->
+                                                <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#editPangkat{{ pang.id_pangkat }}">
+                                                    <i class="bi bi-pencil"></i>
+                                                </button>
+                                                <!-- Modal edit pangkat -->
+                                                <div class="modal fade" id="editPangkat{{ pang.id_pangkat }}" tabindex="-1" aria-labelledby="editPangkatLabel{{ pang.id_pangkat }}" aria-hidden="true">
+                                                    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                                                        <div class="modal-content">
+                                                            <form method="post" action="{% url 'edit_pangkat' pang.id_pangkat %}" enctype="multipart/form-data">
+                                                                <div class="modal-header">
+                                                                    <h1 class="modal-title fs-5" id="editPangkatLabel{{ pang.id_pangkat }}">Edit Riwayat Pangkat & Golongan</h1>
+                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    {% csrf_token %}
+                                                                    <div class="form-floating mb-1">
+                                                                        <select name="nama_pangkat" class="form-select" id="floatingSelectNamaPangkat" aria-label="Pilih Pangkat & Golongan*" required>
+                                                                            {% for pilihan in pilihan_pangkat %}
+                                                                                <option value="{{ pilihan.0 }}" {% if pang and pang.nama_pangkat == pilihan.0 %}selected{% endif %}>{{ pilihan.1 }}</option>
+                                                                            {% endfor %}
+                                                                        </select>
+                                                                        <label for="floatingSelectNamaPangkat">Pilih Pangkat & Golongan*</label>
+                                                                    </div>
+                                                                    <div class="form-floating mb-1">
+                                                                        <input name="nomor_sk_pangkat" type="text" class="form-control" id="floatingNomorSKPangkat" placeholder="Nomor SK Pangkat & Golongan*" value="{{ pang.nomor_sk_pangkat }}" required>
+                                                                        <label for="floatingNomorSKPangkat">Nomor SK Pangkat & Golongan*</label>
+                                                                    </div>
+                                                                    <div class="form-floating mb-1">
+                                                                        <input name="tanggal_sk_pangkat" type="date" class="form-control" id="floatingTanggalSKPangkat" placeholder="Tanggal SK Pangkat & Golongan*" value="{{ pang.tanggal_sk_pangkat }}" required>
+                                                                        <label for="floatingTanggalSKPangkat">Tanggal SK Pangkat & Golongan*</label>
+                                                                    </div>
+                                                                    <div class="form-floating mb-1">
+                                                                        <input name="tmt_pangkat" type="date" class="form-control" id="floatingTMTPangkat" placeholder="TMT Pangkat & Golongan*" value="{{ pang.tmt_pangkat }}" required>
+                                                                        <label for="floatingTMTPangkat">TMT Pangkat & Golongan*</label>
+                                                                    </div>
+                                                                    <div class="form-floating mb-1">
+                                                                        <input name="file_sk_pangkat" type="file" class="form-control" id="floatingFileSKPangkat" required>
+                                                                        <label for="floatingFileSKPangkat">File SK Pangkat & Golongan*</label>
+                                                                    </div>
+                                                                    <!-- Tampilkan pesan jika data pangkat ada dan File SK Pangkat sudah diunggah -->
+                                                                    {% if pang %}
+                                                                    {% if pang.file_sk_pangkat %}
+                                                                    {% if file_exists_pangkat %}
+                                                                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                                                        File SK Pangkat & Golongan sudah diunggah.
+                                                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                                                    </div>
+                                                                    {% else %}
+                                                                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                                                        File SK Pangkat & Golongan belum diunggah. Silahkan unggah File SK Pangkat & Golongan.
+                                                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                                                    </div>
+                                                                    {% endif %}
+                                                                    {% else %}
+                                                                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                                                        File SK Pangkat & Golongan belum diunggah. Silahkan unggah File SK Pangkat & Golongan.
+                                                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                                                    </div>
+                                                                    {% endif %}
+                                                                    {% else %}
+                                                                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                                                        File SK Pangkat & Golongan belum diunggah. Silahkan unggah File SK Pangkat & Golongan.
+                                                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                                                    </div>
+                                                                    {% endif %}
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                                                                    <button type="submit" class="btn btn-primary">Simpan</button>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <!-- Button trigger modal hapus pangkat -->
+                                                <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#deletePangkat{{ pang.id_pangkat }}">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                                <!-- Modal hapus pangkat -->
+                                                <form action="{% url 'delete_pangkat' pang.id_pangkat %}" method="post">
+                                                    {% csrf_token %}
+                                                    <!-- Modal -->
+                                                    <div class="modal fade" id="deletePangkat{{ pang.id_pangkat }}" tabindex="-1" aria-labelledby="deletePangkatLabel{{ pang.id_pangkat }}" aria-hidden="true">
+                                                        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h1 class="modal-title fs-5" id="deletePangkatLabel{{ pang.id_pangkat }}">Hapus Riwayat Pangkat & Golongan</h1>
+                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    Apakah Anda yakin menghapus Data Pangkat & Golongan ini?
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                                                    <button type="submit" class="btn btn-danger">Hapus</button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                        {% endif %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <!-- TAB ANGKA KREDIT -->
+                            <div class="tab-pane fade" id="nav-angkakredit" role="tabpanel" aria-labelledby="nav-angkakredit-tab" tabindex="0">
+                                <div class="row">
+                                    <div class="col d-flex align-items-center">
+                                        <h3 class="card-title">Tabel Riwayat Penilaian Angka Kredit</h3>
+                                    </div>
+                                    <div class="col d-flex justify-content-end">
+                                        <!-- Button trigger modal tambah riwayat pak -->
+                                        <button type="button" class="btn btn-primary my-3" data-bs-toggle="modal" data-bs-target="#tambahPAK">
+                                            <i class="bi bi-plus-square"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <!-- Modal tambah riwayat pak -->
+                                <div class="modal fade" id="tambahPAK" tabindex="-1" aria-labelledby="tambahPAKLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                                        <div class="modal-content">
+                                            <form method="post" action="{% url 'add_pak' %}" enctype="multipart/form-data">
+                                                {% csrf_token %}
+                                                <div class="modal-header">
+                                                    <h1 class="modal-title fs-5" id="tambahPAKLabel">Tambah Riwayat Penilaian Angka Kredit</h1>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    {% csrf_token %}
+                                                    <div class="form-floating mb-1">
+                                                        <input name="nomor_pak" type="text" class="form-control" id="floatingNomorPAK" placeholder="Nomor PAK*" required>
+                                                        <label for="floatingNomorPAK">Nomor PAK*</label>
+                                                    </div>
+                                                    <div class="form-floating mb-1">
+                                                        <input name="tanggal_pak" type="date" class="form-control" id="floatingTanggalPAK" placeholder="Tanggal PAK*" required>
+                                                        <label for="floatingTanggalPAK">Tanggal PAK*</label>
+                                                    </div>
+                                                    <div class="form-floating mb-1">
+                                                        <input name="nilai_pak" type="number" class="form-control" id="floatingNilaiPAK" placeholder="Nilai PAK*" required>
+                                                        <label for="floatingNilaiPAK">Nilai PAK*</label>
+                                                    </div>
+                                                    <div class="form-floating mb-1">
+                                                        <select name="masa_penilaian_pak" class="form-select" id="floatingSelectMasaPenilaianPAK" aria-label="Pilih Masa Penilaian PAK*" required>
+                                                            {% for pilihan in pilihan_pak %}
+                                                                <option value="{{ pilihan.0 }}">{{ pilihan.1 }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                        <label for="floatingSelectMasaPenilaianPAK">Pilih Masa Penilaian PAK*</label>
+                                                    </div>
+                                                    <div class="form-floating mb-1">
+                                                        <input name="file_pak" type="file" class="form-control" id="floatingFilePAK" required>
+                                                        <label for="floatingFilePAK">File PAK*</label>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                                                    <button type="submit" class="btn btn-primary">Simpan</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                <table id="tabelPAK" class="table">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">#</th>
+                                            <th scope="col">Nomor</th>
+                                            <th scope="col">Tanggal</th>
+                                            <th scope="col">Nilai</th>
+                                            <th scope="col">Masa Penilaian</th>
+                                            <th scope="col">File SK</th>
+                                            <th scope="col">Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="table-group-divider">
+                                        {% if pak %}
+                                        {% for angka in pak %}
+                                        <tr>
+                                            <th class="align-middle" scope="row">{{ forloop.counter }}</th>
+                                            <td class="align-middle">{{ angka.nomor_pak }}</td>
+                                            <td class="align-middle">{{ angka.tanggal_pak }}</td>
+                                            <td class="align-middle">{{ angka.nilai_pak }}</td>
+                                            <td class="align-middle">{{ angka.masa_penilaian_pak }}</td>
+                                            <td class="align-middle">
+                                                <!-- Button trigger link lihat file pak -->
+                                                <a href="{% url 'download_file_pak' angka.id_pak %}" class="btn" target="_blank">
+                                                    <i class="bi bi-box-arrow-up-right"></i>
+                                                </a>
+                                            </td>
+                                            <td class="align-middle">
+                                                <!-- Button trigger modal edit pak -->
+                                                <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#editPAK{{ angka.id_pak }}">
+                                                    <i class="bi bi-pencil"></i>
+                                                </button>
+                                                <!-- Modal edit pak -->
+                                                <div class="modal fade" id="editPAK{{ angka.id_pak }}" tabindex="-1" aria-labelledby="editPAKLabel{{ angka.id_pak }}" aria-hidden="true">
+                                                    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                                                        <div class="modal-content">
+                                                            <form method="post" action="{% url 'edit_pak' angka.id_pak %}" enctype="multipart/form-data">
+                                                                <div class="modal-header">
+                                                                    <h1 class="modal-title fs-5" id="editPAKLabel{{ angka.id_pak }}">Edit Riwayat Penilaian Angka Kredit</h1>
+                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    {% csrf_token %}
+                                                                    <div class="form-floating mb-1">
+                                                                        <input name="nomor_pak" type="text" class="form-control" id="floatingNomorPAK" placeholder="Nomor PAK*" value="{{ angka.nomor_pak }}" required>
+                                                                        <label for="floatingNomorPAK">Nomor PAK*</label>
+                                                                    </div>
+                                                                    <div class="form-floating mb-1">
+                                                                        <input name="tanggal_pak" type="date" class="form-control" id="floatingTanggalPAK" placeholder="Tanggal PAK*" value="{{ angka.tanggal_pak }}" required>
+                                                                        <label for="floatingTanggalPAK">Tanggal PAK*</label>
+                                                                    </div>
+                                                                    <div class="form-floating mb-1">
+                                                                        <input name="nilai_pak" type="number" class="form-control" id="floatingNilaiPAK" placeholder="Nilai PAK*" value="{{ angka.nilai_pak }}" required>
+                                                                        <label for="floatingNilaiPAK">Nilai PAK*</label>
+                                                                    </div>
+                                                                    <div class="form-floating mb-1">
+                                                                        <select name="masa_penilaian_pak" class="form-select" id="floatingSelectMasaPenilaianPAK" aria-label="Pilih Masa Penilaian PAK*" required>
+                                                                            {% for pilihan in pilihan_pak %}
+                                                                                <option value="{{ pilihan.0 }}" {% if angka and angka.masa_penilaian_pak == pilihan.0 %}selected{% endif %}>{{ pilihan.1 }}</option>
+                                                                            {% endfor %}
+                                                                        </select>
+                                                                        <label for="floatingSelectMasaPenilaianPAK">Pilih Masa Penilaian PAK*</label>
+                                                                    </div>
+                                                                    <div class="form-floating mb-1">
+                                                                        <input name="file_pak" type="file" class="form-control" id="floatingFilePAK" required>
+                                                                        <label for="floatingFilePAK">File PAK*</label>
+                                                                    </div>
+                                                                    <!-- Tampilkan pesan jika data PAK ada dan File PAK sudah diunggah -->
+                                                                    {% if angka %}
+                                                                    {% if angka.file_pak %}
+                                                                    {% if file_exists_pak %}
+                                                                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                                                        File PAK sudah diunggah.
+                                                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                                                    </div>
+                                                                    {% else %}
+                                                                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                                                        File PAK belum diunggah. Silahkan unggah File PAK.
+                                                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                                                    </div>
+                                                                    {% endif %}
+                                                                    {% else %}
+                                                                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                                                        File PAK belum diunggah. Silahkan unggah File PAK.
+                                                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                                                    </div>
+                                                                    {% endif %}
+                                                                    {% else %}
+                                                                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                                                        File PAK belum diunggah. Silahkan unggah File PAK.
+                                                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                                                    </div>
+                                                                    {% endif %}
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                                                                    <button type="submit" class="btn btn-primary">Simpan</button>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <!-- Button trigger modal hapus pak -->
+                                                <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#deletePAK{{ angka.id_pak }}">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                                <!-- Modal hapus pak -->
+                                                <form action="{% url 'delete_pak' angka.id_pak %}" method="post">
+                                                    {% csrf_token %}
+                                                    <!-- Modal -->
+                                                    <div class="modal fade" id="deletePAK{{ angka.id_pak }}" tabindex="-1" aria-labelledby="deletePAKLabel{{ angka.id_pak }}" aria-hidden="true">
+                                                        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h1 class="modal-title fs-5" id="deletePAKLabel{{ angka.id_pak }}">Hapus Riwayat Penilaian Angka Kredit</h1>
+                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    Apakah Anda yakin menghapus Data Penilaian Angka Kredit ini?
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                                                    <button type="submit" class="btn btn-danger">Hapus</button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                        {% endif %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <!-- TAB DIKLAT -->
+                            <div class="tab-pane fade" id="nav-diklat" role="tabpanel" aria-labelledby="nav-diklat-tab" tabindex="0">
+                                <div class="row">
+                                    <div class="col d-flex align-items-center">
+                                        <h3 class="card-title">Tabel Riwayat Diklat</h3>
+                                    </div>
+                                    <div class="col d-flex justify-content-end">
+                                        <!-- Button trigger modal tambah riwayat Diklat -->
+                                        <button type="button" class="btn btn-primary my-3" data-bs-toggle="modal" data-bs-target="#tambahDiklat">
+                                            <i class="bi bi-plus-square"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <!-- Modal tambah riwayat Diklat -->
+                                <div class="modal fade" id="tambahDiklat" tabindex="-1" aria-labelledby="tambahDiklatLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                                        <div class="modal-content">
+                                            <form method="post" action="{% url 'add_diklat' %}" enctype="multipart/form-data">
+                                                {% csrf_token %}
+                                                <div class="modal-header">
+                                                    <h1 class="modal-title fs-5" id="tambahDiklatLabel">Tambah Riwayat Diklat</h1>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    {% csrf_token %}
+                                                    <div class="form-floating mb-1">
+                                                        <input name="nama_diklat" type="text" class="form-control" id="floatingNamaDiklat" placeholder="Nama Diklat*" required>
+                                                        <label for="floatingNamaDiklat">Nama Diklat*</label>
+                                                    </div>
+                                                    <div class="form-floating mb-1">
+                                                        <input name="tanggal_mulai_diklat" type="date" class="form-control" id="floatingTanggalMulaiDiklat" placeholder="Tanggal Mulai Diklat*" required>
+                                                        <label for="floatingTanggalMulaiDiklat">Tanggal Mulai Diklat*</label>
+                                                    </div>
+                                                    <div class="form-floating mb-1">
+                                                        <input name="tanggal_selesai_diklat" type="date" class="form-control" id="floatingTanggalSelesaiDiklat" placeholder="Tanggal Selesai Diklat*" required>
+                                                        <label for="floatingTanggalSelesaiDiklat">Tanggal Selesai Diklat*</label>
+                                                    </div>
+                                                    <div class="form-floating mb-1">
+                                                        <input name="nomor_sertifikat_diklat" type="text" class="form-control" id="floatingNomorSertifikatDiklat" placeholder="Nomor Sertifikat Diklat*" required>
+                                                        <label for="floatingNomorSertifikatDiklat">Nomor Sertifikat Diklat*</label>
+                                                    </div>
+                                                    <div class="form-floating mb-1">
+                                                        <input name="tanggal_sertifikat_diklat" type="date" class="form-control" id="floatingTanggalSertifikatDiklat" placeholder="Tanggal Sertifikat Diklat*" required>
+                                                        <label for="floatingTanggalSertifikatDiklat">Tanggal Sertifikat Diklat*</label>
+                                                        <div class="form-floating mb-1">
+                                                            <input name="file_sertifikat_diklat" type="file" class="form-control" id="floatingFileSertifikatDiklat" required>
+                                                            <label for="floatingFileSertifikatDiklat">File Sertifikat Diklat*</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                                                        <button type="submit" class="btn btn-primary">Simpan</button>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                <table id="tabelDiklat" class="table">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">#</th>
+                                            <th scope="col">Nama / Judul</th>
+                                            <th scope="col">Tanggal Mulai</th>
+                                            <th scope="col">Tanggal Selesai</th>
+                                            <th scope="col">Nomor Sertifikat</th>
+                                            <th scope="col">Tanggal Sertifikat</th>
+                                            <th scope="col">File Sertifikat</th>
+                                            <th scope="col">Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="table-group-divider">
+                                        {% if diklat %}
+                                        {% for dik in diklat %}
+                                        <tr>
+                                            <th class="align-middle" scope="row">{{ forloop.counter }}</th>
+                                            <td class="align-middle">{{ dik.nama_diklat }}</td>
+                                            <td class="align-middle">{{ dik.tanggal_mulai_diklat }}</td>
+                                            <td class="align-middle">{{ dik.tanggal_selesai_diklat }}</td>
+                                            <td class="align-middle">{{ dik.nomor_sertifikat_diklat }}</td>
+                                            <td class="align-middle">{{ dik.tanggal_sertifikat_diklat }}</td>
+                                            <td class="align-middle">
+                                                <!-- Button trigger link lihat file sertifikat diklat -->
+                                                <a href="{% url 'download_file_diklat' dik.id_diklat %}" class="btn" target="_blank">
+                                                    <i class="bi bi-box-arrow-up-right"></i>
+                                                </a>
+                                            </td>
+                                            <td class="align-middle">
+                                                <!-- Button trigger modal edit diklat -->
+                                                <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#editDiklat{{ dik.id_diklat }}">
+                                                    <i class="bi bi-pencil"></i>
+                                                </button>
+                                                <!-- Modal edit diklat -->
+                                                <div class="modal fade" id="editDiklat{{ dik.id_diklat }}" tabindex="-1" aria-labelledby="editDiklatLabel{{ dik.id_diklat }}" aria-hidden="true">
+                                                    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                                                        <div class="modal-content">
+                                                            <form method="post" action="{% url 'edit_diklat' dik.id_diklat %}" enctype="multipart/form-data">
+                                                                <div class="modal-header">
+                                                                    <h1 class="modal-title fs-5" id="editDiklatLabel{{ dik.id_diklat }}">Edit Riwayat Diklat</h1>
+                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    {% csrf_token %}
+                                                                    <div class="form-floating mb-1">
+                                                                        <input name="nama_diklat" type="text" class="form-control" id="floatingNamaDiklat" placeholder="Nama Diklat*" value="{{ dik.nama_diklat }}" required>
+                                                                        <label for="floatingNamaDiklat">Nama Diklat*</label>
+                                                                    </div>
+                                                                    <div class="form-floating mb-1">
+                                                                        <input name="tanggal_mulai_diklat" type="date" class="form-control" id="floatingTanggalMulaiDiklat" placeholder="Tanggal Mulai Diklat*" value="{{ dik.tanggal_mulai_diklat }}" required>
+                                                                        <label for="floatingTanggalMulaiDiklat">Tanggal Mulai Diklat*</label>
+                                                                    </div>
+                                                                    <div class="form-floating mb-1">
+                                                                        <input name="tanggal_selesai_diklat" type="date" class="form-control" id="floatingTanggalSelesaiDiklat" placeholder="Tanggal Selesai Diklat*" value="{{ dik.tanggal_selesai_diklat }}" required>
+                                                                        <label for="floatingTanggalSelesaiDiklat">Tanggal Selesai Diklat*</label>
+                                                                    </div>
+                                                                    <div class="form-floating mb-1">
+                                                                        <input name="nomor_sertifikat_diklat" type="text" class="form-control" id="floatingNomorSertifikatDiklat" placeholder="Nomor Sertifikat Diklat*" value="{{ dik.nomor_sertifikat_diklat }}" required>
+                                                                        <label for="floatingNomorSertifikatDiklat">Nomor Sertifikat Diklat*</label>
+                                                                    </div>
+                                                                    <div class="form-floating mb-1">
+                                                                        <input name="tanggal_sertifikat_diklat" type="date" class="form-control" id="floatingTanggalSertifikatDiklat" placeholder="Tanggal Sertifikat Diklat*" value="{{ dik.tanggal_sertifikat_diklat }}" required>
+                                                                        <label for="floatingTanggalSertifikatDiklat">Tanggal Sertifikat Diklat*</label>
+                                                                    </div>
+                                                                    <div class="form-floating mb-1">
+                                                                        <input name="file_sertifikat_diklat" type="file" class="form-control" id="floatingFileSertifikatDiklat" required>
+                                                                        <label for="floatingFileSertifikatDiklat">File Sertifikat Diklat*</label>
+                                                                    </div>
+                                                                    <!-- Tampilkan pesan jika data Diklat ada dan File Sertifikat Diklat sudah diunggah -->
+                                                                    {% if dik %}
+                                                                    {% if dik.file_sertifikat_diklat %}
+                                                                    {% if file_exists_diklat %}
+                                                                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                                                        File Sertifikat Diklat sudah diunggah.
+                                                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                                                    </div>
+                                                                    {% else %}
+                                                                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                                                        File Sertifikat Diklat belum diunggah. Silahkan unggah File Sertifikat Diklat.
+                                                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                                                    </div>
+                                                                    {% endif %}
+                                                                    {% else %}
+                                                                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                                                        File Sertifikat Diklat belum diunggah. Silahkan unggah File Sertifikat Diklat.
+                                                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                                                    </div>
+                                                                    {% endif %}
+                                                                    {% else %}
+                                                                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                                                        File Sertifikat Diklat belum diunggah. Silahkan unggah File Sertifikat Diklat.
+                                                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                                                    </div>
+                                                                    {% endif %}
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                                                                    <button type="submit" class="btn btn-primary">Simpan</button>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <!-- Button trigger modal hapus diklat -->
+                                                <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#deleteDiklat{{ dik.id_diklat }}">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                                <!-- Modal hapus diklat -->
+                                                <form action="{% url 'delete_diklat' dik.id_diklat %}" method="post">
+                                                    {% csrf_token %}
+                                                    <!-- Modal -->
+                                                    <div class="modal fade" id="deleteDiklat{{ dik.id_diklat }}" tabindex="-1" aria-labelledby="deleteDiklatLabel{{ dik.id_diklat }}" aria-hidden="true">
+                                                        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h1 class="modal-title fs-5" id="deleteDiklatLabel{{ dik.id_diklat }}">Hapus Riwayat Diklat</h1>
+                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    Apakah Anda yakin menghapus Data Diklat ini?
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                                                    <button type="submit" class="btn btn-danger">Hapus</button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                        {% endif %}
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                         {% else %}
                         <div class="alert alert-danger alert-dismissible fade show" role="alert">
@@ -650,6 +1230,9 @@
     <script>
         new DataTable('#tabelPendidikan');
         new DataTable('#tabelJabatan');
+        new DataTable('#tabelPangkat');
+        new DataTable('#tabelPAK');
+        new DataTable('#tabelDiklat');
     </script>
 </body>
 

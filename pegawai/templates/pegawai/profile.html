@@ -41,7 +41,7 @@
             </div>
         </div>
     </nav>
-    <div class="container-fluid p-5">
+    <div class="container-fluid p-3">
         {% if messages %}
         {% for message in messages %}
         {% if message.tags == 'success' %}
@@ -88,7 +88,7 @@
                             </div>
                             <!-- Modal edit profil -->
                             <div class="modal fade" id="editProfil" tabindex="-1" aria-labelledby="editProfilLabel" aria-hidden="true">
-                                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                                <div class="modal-dialog modal-dialog-centered">
                                     <div class="modal-content">
                                         <form method="post" action="{% url 'add_pegawai' %}">
                                             {% csrf_token %}
@@ -228,7 +228,7 @@
                                 </div>
                                 <!-- Modal tambah riwayat pendidikan -->
                                 <div class="modal fade" id="tambahPendidikan" tabindex="-1" aria-labelledby="tambahPendidikanLabel" aria-hidden="true">
-                                    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                                    <div class="modal-dialog modal-dialog-centered">
                                         <div class="modal-content">
                                             <form method="post" action="{% url 'add_pendidikan' %}" enctype="multipart/form-data">
                                                 {% csrf_token %}
@@ -321,7 +321,7 @@
                                                 </button>
                                                 <!-- Modal edit pendidikan -->
                                                 <div class="modal fade" id="editPendidikan{{ pend.id_pendidikan }}" tabindex="-1" aria-labelledby="editPendidikanLabel{{ pend.id_pendidikan }}" aria-hidden="true">
-                                                    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                                                    <div class="modal-dialog modal-dialog-centered">
                                                         <div class="modal-content">
                                                             <form method="post" action="{% url 'edit_pendidikan' pend.id_pendidikan %}" enctype="multipart/form-data">
                                                                 <div class="modal-header">
@@ -414,7 +414,7 @@
                                                     {% csrf_token %}
                                                     <!-- Modal -->
                                                     <div class="modal fade" id="deletePendidikan{{ pend.id_pendidikan }}" tabindex="-1" aria-labelledby="deletePendidikanLabel{{ pend.id_pendidikan }}" aria-hidden="true">
-                                                        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                                                        <div class="modal-dialog modal-dialog-centered">
                                                             <div class="modal-content">
                                                                 <div class="modal-header">
                                                                     <h1 class="modal-title fs-5" id="deletePendidikanLabel{{ pend.id_pendidikan }}">Hapus Riwayat Pendidikan</h1>
@@ -453,7 +453,7 @@
                                 </div>
                                 <!-- Modal tambah riwayat jabatan -->
                                 <div class="modal fade" id="tambahJabatan" tabindex="-1" aria-labelledby="tambahJabatanLabel" aria-hidden="true">
-                                    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                                    <div class="modal-dialog modal-dialog-centered">
                                         <div class="modal-content">
                                             <form method="post" action="{% url 'add_jabatan' %}" enctype="multipart/form-data">
                                                 {% csrf_token %}
@@ -530,7 +530,7 @@
                                                 </button>
                                                 <!-- Modal edit jabatan -->
                                                 <div class="modal fade" id="editJabatan{{ jab.id_jabatan }}" tabindex="-1" aria-labelledby="editJabatanLabel{{ jab.id_jabatan }}" aria-hidden="true">
-                                                    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                                                    <div class="modal-dialog modal-dialog-centered">
                                                         <div class="modal-content">
                                                             <form method="post" action="{% url 'edit_jabatan' jab.id_jabatan %}" enctype="multipart/form-data">
                                                                 <div class="modal-header">
@@ -607,7 +607,7 @@
                                                     {% csrf_token %}
                                                     <!-- Modal -->
                                                     <div class="modal fade" id="deleteJabatan{{ jab.id_jabatan }}" tabindex="-1" aria-labelledby="deleteJabatanLabel{{ jab.id_jabatan }}" aria-hidden="true">
-                                                        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                                                        <div class="modal-dialog modal-dialog-centered">
                                                             <div class="modal-content">
                                                                 <div class="modal-header">
                                                                     <h1 class="modal-title fs-5" id="deleteJabatanLabel{{ jab.id_jabatan }}">Hapus Riwayat Jabatan</h1>
@@ -646,7 +646,7 @@
                                 </div>
                                 <!-- Modal tambah riwayat pangkat -->
                                 <div class="modal fade" id="tambahPangkat" tabindex="-1" aria-labelledby="tambahPangkatLabel" aria-hidden="true">
-                                    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                                    <div class="modal-dialog modal-dialog-centered">
                                         <div class="modal-content">
                                             <form method="post" action="{% url 'add_pangkat' %}" enctype="multipart/form-data">
                                                 {% csrf_token %}
@@ -723,7 +723,7 @@
                                                 </button>
                                                 <!-- Modal edit pangkat -->
                                                 <div class="modal fade" id="editPangkat{{ pang.id_pangkat }}" tabindex="-1" aria-labelledby="editPangkatLabel{{ pang.id_pangkat }}" aria-hidden="true">
-                                                    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                                                    <div class="modal-dialog modal-dialog-centered">
                                                         <div class="modal-content">
                                                             <form method="post" action="{% url 'edit_pangkat' pang.id_pangkat %}" enctype="multipart/form-data">
                                                                 <div class="modal-header">
@@ -800,7 +800,7 @@
                                                     {% csrf_token %}
                                                     <!-- Modal -->
                                                     <div class="modal fade" id="deletePangkat{{ pang.id_pangkat }}" tabindex="-1" aria-labelledby="deletePangkatLabel{{ pang.id_pangkat }}" aria-hidden="true">
-                                                        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                                                        <div class="modal-dialog modal-dialog-centered">
                                                             <div class="modal-content">
                                                                 <div class="modal-header">
                                                                     <h1 class="modal-title fs-5" id="deletePangkatLabel{{ pang.id_pangkat }}">Hapus Riwayat Pangkat & Golongan</h1>
@@ -839,7 +839,7 @@
                                 </div>
                                 <!-- Modal tambah riwayat pak -->
                                 <div class="modal fade" id="tambahPAK" tabindex="-1" aria-labelledby="tambahPAKLabel" aria-hidden="true">
-                                    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                                    <div class="modal-dialog modal-dialog-centered">
                                         <div class="modal-content">
                                             <form method="post" action="{% url 'add_pak' %}" enctype="multipart/form-data">
                                                 {% csrf_token %}
@@ -916,7 +916,7 @@
                                                 </button>
                                                 <!-- Modal edit pak -->
                                                 <div class="modal fade" id="editPAK{{ angka.id_pak }}" tabindex="-1" aria-labelledby="editPAKLabel{{ angka.id_pak }}" aria-hidden="true">
-                                                    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                                                    <div class="modal-dialog modal-dialog-centered">
                                                         <div class="modal-content">
                                                             <form method="post" action="{% url 'edit_pak' angka.id_pak %}" enctype="multipart/form-data">
                                                                 <div class="modal-header">
@@ -993,7 +993,7 @@
                                                     {% csrf_token %}
                                                     <!-- Modal -->
                                                     <div class="modal fade" id="deletePAK{{ angka.id_pak }}" tabindex="-1" aria-labelledby="deletePAKLabel{{ angka.id_pak }}" aria-hidden="true">
-                                                        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                                                        <div class="modal-dialog modal-dialog-centered">
                                                             <div class="modal-content">
                                                                 <div class="modal-header">
                                                                     <h1 class="modal-title fs-5" id="deletePAKLabel{{ angka.id_pak }}">Hapus Riwayat Penilaian Angka Kredit</h1>
@@ -1032,7 +1032,7 @@
                                 </div>
                                 <!-- Modal tambah riwayat Diklat -->
                                 <div class="modal fade" id="tambahDiklat" tabindex="-1" aria-labelledby="tambahDiklatLabel" aria-hidden="true">
-                                    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                                    <div class="modal-dialog modal-dialog-centered">
                                         <div class="modal-content">
                                             <form method="post" action="{% url 'add_diklat' %}" enctype="multipart/form-data">
                                                 {% csrf_token %}
@@ -1111,7 +1111,7 @@
                                                 </button>
                                                 <!-- Modal edit diklat -->
                                                 <div class="modal fade" id="editDiklat{{ dik.id_diklat }}" tabindex="-1" aria-labelledby="editDiklatLabel{{ dik.id_diklat }}" aria-hidden="true">
-                                                    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                                                    <div class="modal-dialog modal-dialog-centered">
                                                         <div class="modal-content">
                                                             <form method="post" action="{% url 'edit_diklat' dik.id_diklat %}" enctype="multipart/form-data">
                                                                 <div class="modal-header">
@@ -1188,7 +1188,7 @@
                                                     {% csrf_token %}
                                                     <!-- Modal -->
                                                     <div class="modal fade" id="deleteDiklat{{ dik.id_diklat }}" tabindex="-1" aria-labelledby="deleteDiklatLabel{{ dik.id_diklat }}" aria-hidden="true">
-                                                        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                                                        <div class="modal-dialog modal-dialog-centered">
                                                             <div class="modal-content">
                                                                 <div class="modal-header">
                                                                     <h1 class="modal-title fs-5" id="deleteDiklatLabel{{ dik.id_diklat }}">Hapus Riwayat Diklat</h1>

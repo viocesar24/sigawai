@@ -11,7 +11,7 @@
     <style>
         /* Ganti ukuran ikon profil */
         .profile-icon {
-            font-size: 100px;
+            font-size: 50px;
             /* Atur ukuran sesuai keinginan Anda */
         }
     </style>
@@ -42,11 +42,249 @@
         </div>
     </nav>
     <div class="container-fluid p-3">
-        <h1>Hello, {{ username }}!</h1>
+        <div class="row">
+            <div class="col-sm-4">
+                <div class="row row-cols-1">
+                    <div class="col mb-3">
+                        <div class="card text-center">
+                            <div class="card-header">
+                                Profil
+                            </div>
+                            <div class="card-body">
+                                <!-- Tampilkan pesan jika profil belum dilengkapi -->
+                                {% if not pegawai %}
+                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                    Data Profil Anda belum lengkap! Silahkan melengkapi Data Profil Anda!
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                                {% endif %}
+                                <i class="bi bi-file-person profile-icon"></i>
+                                <h4 class="card-title">{{ pegawai.nama_pegawai }}</h4>
+                                <p class="card-text text-body-tertiary">NIP. {{ pegawai.nip_pegawai }}</p>
+                                <div class="container text-start">
+                                    <div class="row border-bottom mb-3">
+                                        {% if pegawai.aktif_pegawai %}
+                                        <h5>
+                                            <i class="bi bi-person-check"></i>
+                                            Status Pegawai
+                                        </h5>
+                                        <p class="card-text text-body-tertiary fs-6 fw-lighter">Aktif</p>
+                                        {% else %}
+                                        <h5>
+                                            <i class="bi bi-person-dash"></i>
+                                            Status Pegawai
+                                        </h5>
+                                        <p class="card-text text-body-tertiary fs-6 fw-lighter">Tidak Aktif</p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="card text-center">
+                            <div class="card-header">
+                                Ringkasan
+                            </div>
+                            <div class="card-body">
+                                <!-- Tampilkan pesan jika profil belum dilengkapi -->
+                                {% if not pegawai %}
+                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                    Data Profil Anda belum lengkap! Silahkan melengkapi Data Profil Anda!
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                                {% endif %}
+                                <div class="container text-start">
+                                    <div class="row border-bottom mb-3">
+                                        <h5>
+                                            <i class="bi bi-mortarboard"></i>
+                                            Pendidikan
+                                        </h5>
+                                        <p class="card-text text-body-tertiary fs-6 fw-lighter">{{ pendidikan_terakhir.tingkat_pendidikan }}</p>
+                                    </div>
+                                    <div class="row border-bottom mb-3">
+                                        <h5>
+                                            <i class="bi bi-bookmark-star"></i>
+                                            Pangkat & Golongan
+                                        </h5>
+                                        <p class="card-text text-body-tertiary fs-6 fw-lighter">{{ pangkat_terakhir.nama_pangkat }} / {{ pangkat_terakhir.get_nama_pangkat_display }}</p>
+                                    </div>
+                                    <div class="row border-bottom mb-3">
+                                        <h5>
+                                            <i class="bi bi-briefcase"></i>
+                                            Jabatan
+                                        </h5>
+                                        <p class="card-text text-body-tertiary fs-6 fw-lighter">{{ jabatan_terakhir.get_nama_jabatan_display }}</p>
+                                    </div>
+                                    <div class="row border-bottom mb-3">
+                                        <h5>
+                                            <i class="bi bi-briefcase"></i>
+                                            Diklat Terbaru
+                                        </h5>
+                                        <p class="card-text text-body-tertiary fs-6 fw-lighter">{{ diklat_terakhir.nama_diklat }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-8">
+                <h3 class="text-center">Diagram Penilaian Angka Kredit</h3>
+
+                <div class="input-group p-3">
+                    <span class="input-group-text">Tahun Mulai:</span>
+                    <input type="text" class="form-control" id="startYear" placeholder="Tahun Mulai">
+                    <span class="input-group-text">Tahun Akhir:</span>
+                    <input type="text" class="form-control" id="endYear" placeholder="Tahun Akhir">
+                    <button type="input-group-text button" class="btn btn-primary" onclick="filterData()">Filter</button>
+                </div>
+
+                <div id="pakChartContainer">
+                    <canvas id="pakChart"></canvas>
+                </div>
+            </div>
+        </div>
     </div>
+
+    <div class="container-fluid text-center">
+        <hr />
+        <h1 class="text-dark">BERITA TERKINI</h1>
+        <hr />
+    </div>
+
+    <div class="container-fluid p-3">
+        <div class="card-group">
+            <div class="card">
+                <i class="card-img-top bi bi-newspaper text-center" style="font-size: 100px;"></i>
+                <div class="card-body">
+                    <h5 class="card-title">Judul Berita 1</h5>
+                    <p class="card-text">Ini adalah ringkasan dari berita yang terjadi hari ini. Berita ini berisi tentang peristiwa penting yang mempengaruhi masyarakat.</p>
+                    <p class="card-text"><small class="text-body-secondary">Last updated 3 mins ago</small></p>
+                </div>
+            </div>
+            <div class="card">
+                <i class="card-img-top bi bi-newspaper text-center" style="font-size: 100px;"></i>
+                <div class="card-body">
+                    <h5 class="card-title">Judul Berita 2</h5>
+                    <p class="card-text">Ini adalah ringkasan dari berita lain yang juga berpengaruh pada situasi saat ini. Berita ini penting untuk diketahui oleh masyarakat.</p>
+                    <p class="card-text"><small class="text-body-secondary">Last updated 3 mins ago</small></p>
+                </div>
+            </div>
+            <div class="card">
+                <i class="card-img-top bi bi-newspaper text-center" style="font-size: 100px;"></i>
+                <div class="card-body">
+                    <h5 class="card-title">Judul Berita 3</h5>
+                    <p class="card-text">Berita ketiga ini memberikan informasi penting tentang peristiwa terkini yang mempengaruhi kehidupan masyarakat.</p>
+                    <p class="card-text"><small class="text-body-secondary">Last updated 3 mins ago</small></p>
+                </div>
+            </div>
+            <div class="card">
+                <i class="card-img-top bi bi-newspaper text-center" style="font-size: 100px;"></i>
+                <div class="card-body">
+                    <h5 class="card-title">Judul Berita 4</h5>
+                    <p class="card-text">Ringkasan berita keempat ini memberikan gambaran singkat tentang peristiwa penting yang perlu diketahui oleh masyarakat.</p>
+                    <p class="card-text"><small class="text-body-secondary">Last updated 3 mins ago</small></p>
+                </div>
+            </div>
+            <div class="card">
+                <i class="card-img-top bi bi-newspaper text-center" style="font-size: 100px;"></i>
+                <div class="card-body">
+                    <h5 class="card-title">Judul Berita 5</h5>
+                    <p class="card-text">Berita kelima ini memberikan informasi tentang isu-isu terkini yang perlu menjadi perhatian kita semua.</p>
+                    <p class="card-text"><small class="text-body-secondary">Last updated 3 mins ago</small></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.js"></script>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- chartjs-adapter-date-fns CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const pakDataJson = '{{ pak_data_json|escapejs }}';  // Memasukkan data JSON ke variabel JavaScript
+            window.pakData = JSON.parse(pakDataJson);  // Mengubah JSON string menjadi objek JavaScript
+
+            window.data = {
+                labels: pakData.map(data => new Date(data.tanggal_pak.replace(/-/g, "/"))), // Menggunakan adapter untuk parsing tanggal
+                datasets: [{
+                    label: 'Nilai PAK',
+                    data: pakData.map(data => data.nilai_pak),
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 2,
+                    fill: false // Menghapus area isi di bawah garis untuk grafik garis
+                }]
+            };
+
+            const ctx = document.getElementById('pakChart').getContext('2d');
+            window.chart = new Chart(ctx, {
+                type: 'line', // Menggunakan tipe grafik garis
+                data: window.data,
+                options: {
+                    scales: {
+                        x: {
+                            type: 'time',
+                            time: {
+                                unit: 'month', // Menggunakan unit 'month' untuk menampilkan data per bulan
+                                displayFormats: {
+                                    month: 'yyyy-MM' // Format tanggal per bulan (tahun dan bulan)
+                                }
+                            },
+                            title: {
+                                display: true,
+                                text: 'Tanggal PAK'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Nilai PAK'
+                            }
+                        }
+                    }
+                }
+            });
+        });
+
+        function filterData() {
+            const startYear = parseInt(document.getElementById('startYear').value);
+            const endYear = parseInt(document.getElementById('endYear').value);
+
+            // Validasi tahun yang dimasukkan
+            const currentYear = new Date().getFullYear();
+            if (isNaN(startYear) || isNaN(endYear) || startYear < 1970 || endYear > 2100 || startYear > currentYear || endYear > currentYear) {
+                alert('Tolong masukkan tahun yang benar, mulai dari 1970 sampai ' + currentYear);
+                return;
+            }
+
+            // Memastikan tahun akhir lebih besar atau sama dengan tahun awal
+            if (endYear < startYear) {
+                // Jika tahun akhir lebih kecil dari tahun awal, tukar posisi
+                const temp = startYear;
+                startYear = endYear;
+                endYear = temp;
+            }
+
+            // Memfilter data berdasarkan tahun yang dimasukkan
+            const filteredData = pakData.filter(data => {
+                const dataYear = new Date(data.tanggal_pak).getFullYear();
+                return dataYear >= startYear && dataYear <= endYear;
+            });
+
+            const filteredLabels = filteredData.map(data => new Date(data.tanggal_pak.replace(/-/g, "/")));
+            const filteredValues = filteredData.map(data => data.nilai_pak);
+
+            window.data.labels = filteredLabels;
+            window.data.datasets[0].data = filteredValues;
+
+            window.chart.update();
+        }
+    </script>
 </body>
 
 </html>

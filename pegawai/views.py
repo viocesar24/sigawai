@@ -7,17 +7,10 @@ from django.core.files.storage import FileSystemStorage, default_storage
 from django.http import HttpResponse, Http404
 from .models import Pegawai, Pendidikan, Jabatan, Pangkat, AngkaKredit, Diklat
 import os
+import json
 
 
 def index(request):
-    # Mendapatkan username user yang sedang login
-    username = request.user.username
-    context = {"username": username}
-    return render(request, "pegawai/index.html", context)
-
-
-@login_required
-def profile(request):
     # Mendapatkan username user yang sedang login
     username = request.user.username
 
@@ -40,9 +33,14 @@ def profile(request):
         pendidikan = Pendidikan.objects.filter(user=request.user).order_by(
             "-tanggal_terbit_ijazah_pendidikan"
         )
+        if pendidikan.exists():
+            pendidikan_terakhir = pendidikan[0]
+        else:
+            pendidikan_terakhir = None
     except Pendidikan.DoesNotExist:
         # Jika data tabel pendidikan tidak ada maka return Null/None
         pendidikan = None
+        pendidikan_terakhir = None
 
     # Inisialisasi file_exists_pendidikan sebagai False
     file_exists_pendidikan = False
@@ -147,15 +145,27 @@ def profile(request):
     # Inisialisasi file_exists_pak sebagai False
     file_exists_pak = False
 
+    # Mengambil data PAK untuk dimasukkan ke dalam chart
+    pak_data = []
+
     if pak.exists():
         # Ubah format tanggal PAK menjadi "YYYY/MM/DD"
         for ak in pak:
             ak.tanggal_pak = ak.tanggal_pak.strftime("%Y-%m-%d")
+            pak_data.append(
+                {
+                    "tanggal_pak": ak.tanggal_pak,
+                    "nilai_pak": ak.nilai_pak,
+                }
+            )
             if ak and ak.tanggal_pak:
                 file_exists_pak = default_storage.exists(ak.file_pak.name)
             else:
                 # Keluar dari loop jika file_exists_pak telah ditemukan
                 break
+
+    # Mengubah data menjadi JSON
+    pak_data_json = json.dumps(pak_data)
 
     # Mengambil data pilihan PAK
     pilihan_pak = AngkaKredit.MasaPenilaian.choices
@@ -200,6 +210,7 @@ def profile(request):
         "pegawai": pegawai,
         "tanggal_lahir_pegawai": tanggal_lahir_pegawai,
         "pendidikan": pendidikan,
+        "pendidikan_terakhir": pendidikan_terakhir,
         "pilihan_tingkat_pendidikan": pilihan_tingkat_pendidikan,
         "file_exists_pendidikan": file_exists_pendidikan,
         "jabatan": jabatan,
@@ -214,6 +225,231 @@ def profile(request):
         "pak_terakhir": pak_terakhir,
         "pilihan_pak": pilihan_pak,
         "file_exists_pak": file_exists_pak,
+        "pak_data_json": pak_data_json,  # Menambahkan data JSON ke konteks
+        "diklat": diklat,
+        "diklat_terakhir": diklat_terakhir,
+        "file_exists_diklat": file_exists_diklat,
+    }
+    return render(request, "pegawai/index.html", context)
+
+
+@login_required
+def profile(request):
+    # Mendapatkan username user yang sedang login
+    username = request.user.username
+
+    ##### PEGAWAI #####
+    # Mendapatkan data pegawai dari user yang sedang login
+    try:
+        # Mengambil data tabel pegawai
+        pegawai = Pegawai.objects.get(user=request.user)
+        # Ubah format tanggal lahir menjadi "YYYY/MM/DD"
+        tanggal_lahir_pegawai = pegawai.tanggal_lahir_pegawai.strftime("%Y-%m-%d")
+    except Pegawai.DoesNotExist:
+        # Jika data tabel pegawai tidak ada maka return Null/None
+        pegawai = None
+        tanggal_lahir_pegawai = None
+
+    ##### PENDIDIKAN #####
+    # Mendapatkan data pendidikan dari user yang sedang login
+    try:
+        # Mengambil data tabel pendidikan
+        pendidikan = Pendidikan.objects.filter(user=request.user).order_by(
+            "-tanggal_terbit_ijazah_pendidikan"
+        )
+        if pendidikan.exists():
+            pendidikan_terakhir = pendidikan[0]
+        else:
+            pendidikan_terakhir = None
+    except Pendidikan.DoesNotExist:
+        # Jika data tabel pendidikan tidak ada maka return Null/None
+        pendidikan = None
+        pendidikan_terakhir = None
+
+    # Inisialisasi file_exists_pendidikan sebagai False
+    file_exists_pendidikan = False
+
+    if pendidikan.exists():
+        # Ubah format tanggal terbit ijazah pendidikan menjadi "YYYY/MM/DD"
+        for pend in pendidikan:
+            pend.tanggal_terbit_ijazah_pendidikan = (
+                pend.tanggal_terbit_ijazah_pendidikan.strftime("%Y-%m-%d")
+            )
+            if pend and pend.file_ijazah_pendidikan:
+                file_exists_pendidikan = default_storage.exists(
+                    pend.file_ijazah_pendidikan.name
+                )
+            else:
+                # Keluar dari loop jika file_exists_pendidikan telah ditemukan
+                break
+
+    # Mengambil data pilihan tingkat pendidikan
+    pilihan_tingkat_pendidikan = Pendidikan.TingkatPendidikan.choices
+
+    ##### JABATAN #####
+    # Mendapatkan data jabatan dari user yang sedang login
+    try:
+        # Mengambil data tabel jabatan
+        jabatan = Jabatan.objects.filter(user=request.user).order_by(
+            "-tanggal_sk_jabatan"
+        )
+        if jabatan.exists():
+            jabatan_terakhir = jabatan[0]
+        else:
+            jabatan_terakhir = None
+    except Jabatan.DoesNotExist:
+        # Jika data tabel jabatan tidak ada maka return Null/None
+        jabatan = None
+        jabatan_terakhir = None
+
+    # Inisialisasi file_exists_jabatan sebagai False
+    file_exists_jabatan = False
+
+    if jabatan.exists():
+        # Ubah format tanggal sk jabatan menjadi "YYYY/MM/DD"
+        for jab in jabatan:
+            jab.tanggal_sk_jabatan = jab.tanggal_sk_jabatan.strftime("%Y-%m-%d")
+            jab.tmt_jabatan = jab.tmt_jabatan.strftime("%Y-%m-%d")
+            if jab and jab.file_sk_jabatan:
+                file_exists_jabatan = default_storage.exists(jab.file_sk_jabatan.name)
+            else:
+                # Keluar dari loop jika file_exists_jabatan telah ditemukan
+                break
+
+    # Mengambil data pilihan jabatan
+    pilihan_jabatan = Jabatan.NamaJabatan.choices
+
+    ##### PANGKAT #####
+    # Mendapatkan data pangkat dari user yang sedang login
+    try:
+        # Mengambil data tabel pangkat
+        pangkat = Pangkat.objects.filter(user=request.user).order_by(
+            "-tanggal_sk_pangkat"
+        )
+        if pangkat.exists():
+            pangkat_terakhir = pangkat[0]
+        else:
+            pangkat_terakhir = None
+    except Pangkat.DoesNotExist:
+        # Jika data tabel pangkat tidak ada maka return Null/None
+        pangkat = None
+        pangkat_terakhir = None
+
+    # Inisialisasi file_exists_pangkat sebagai False
+    file_exists_pangkat = False
+
+    if pangkat.exists():
+        # Ubah format tanggal sk pangkat menjadi "YYYY/MM/DD"
+        for pang in pangkat:
+            pang.tanggal_sk_pangkat = pang.tanggal_sk_pangkat.strftime("%Y-%m-%d")
+            pang.tmt_pangkat = pang.tmt_pangkat.strftime("%Y-%m-%d")
+            if pang and pang.tanggal_sk_pangkat:
+                file_exists_pangkat = default_storage.exists(pang.file_sk_pangkat.name)
+            else:
+                # Keluar dari loop jika file_exists_pangkat telah ditemukan
+                break
+
+    # Mengambil data pilihan pangkat
+    pilihan_pangkat = Pangkat.KodePangkat.choices
+
+    ##### PENILAIAN ANGKA KREDIT (PAK) #####
+    # Mendapatkan data PAK dari user yang sedang login
+    try:
+        # Mengambil data tabel PAK
+        pak = AngkaKredit.objects.filter(user=request.user).order_by("-tanggal_pak")
+        if pak.exists():
+            pak_terakhir = pak[0]
+        else:
+            pak_terakhir = None
+    except AngkaKredit.DoesNotExist:
+        # Jika data tabel PAK tidak ada maka return Null/None
+        pak = None
+        pak_terakhir = None
+
+    # Inisialisasi file_exists_pak sebagai False
+    file_exists_pak = False
+
+    # Mengambil data PAK untuk dimasukkan ke dalam chart
+    pak_data = []
+
+    if pak.exists():
+        # Ubah format tanggal PAK menjadi "YYYY/MM/DD"
+        for ak in pak:
+            ak.tanggal_pak = ak.tanggal_pak.strftime("%Y-%m-%d")
+            pak_data.append(
+                {
+                    "tanggal_pak": ak.tanggal_pak,
+                    "nilai_pak": ak.nilai_pak,
+                }
+            )
+            if ak and ak.tanggal_pak:
+                file_exists_pak = default_storage.exists(ak.file_pak.name)
+            else:
+                # Keluar dari loop jika file_exists_pak telah ditemukan
+                break
+
+    # Mengubah data menjadi JSON
+    pak_data_json = json.dumps(pak_data)
+
+    # Mengambil data pilihan PAK
+    pilihan_pak = AngkaKredit.MasaPenilaian.choices
+
+    ##### DIKLAT #####
+    # Mendapatkan data DIKLAT dari user yang sedang login
+    try:
+        # Mengambil data tabel DIKLAT
+        diklat = Diklat.objects.filter(user=request.user).order_by(
+            "-tanggal_sertifikat_diklat"
+        )
+        if diklat.exists():
+            diklat_terakhir = diklat[0]
+        else:
+            diklat_terakhir = None
+    except Diklat.DoesNotExist:
+        # Jika data tabel DIKLAT tidak ada maka return Null/None
+        diklat = None
+        diklat_terakhir = None
+
+    # Inisialisasi file_exists_dik sebagai False
+    file_exists_diklat = False
+
+    if diklat.exists():
+        # Ubah format tanggal sertifikat DIKLAT, tanggal mulai dan selesai DIKLAT menjadi "YYYY/MM/DD"
+        for dik in diklat:
+            dik.tanggal_mulai_diklat = dik.tanggal_mulai_diklat.strftime("%Y-%m-%d")
+            dik.tanggal_selesai_diklat = dik.tanggal_selesai_diklat.strftime("%Y-%m-%d")
+            dik.tanggal_sertifikat_diklat = dik.tanggal_sertifikat_diklat.strftime(
+                "%Y-%m-%d"
+            )
+            if dik and dik.tanggal_sertifikat_diklat:
+                file_exists_diklat = default_storage.exists(
+                    dik.file_sertifikat_diklat.name
+                )
+            else:
+                # Keluar dari loop jika file_exists_diklat telah ditemukan
+                break
+
+    context = {
+        "username": username,
+        "pegawai": pegawai,
+        "tanggal_lahir_pegawai": tanggal_lahir_pegawai,
+        "pendidikan": pendidikan,
+        "pendidikan_terakhir": pendidikan_terakhir,
+        "pilihan_tingkat_pendidikan": pilihan_tingkat_pendidikan,
+        "file_exists_pendidikan": file_exists_pendidikan,
+        "jabatan": jabatan,
+        "jabatan_terakhir": jabatan_terakhir,
+        "pilihan_jabatan": pilihan_jabatan,
+        "file_exists_jabatan": file_exists_jabatan,
+        "pangkat": pangkat,
+        "pangkat_terakhir": pangkat_terakhir,
+        "pilihan_pangkat": pilihan_pangkat,
+        "file_exists_pangkat": file_exists_pangkat,
+        "pak": pak,
+        "pak_terakhir": pak_terakhir,
+        "pilihan_pak": pilihan_pak,
+        "file_exists_pak": file_exists_pak,
+        "pak_data_json": pak_data_json,  # Menambahkan data JSON ke konteks
         "diklat": diklat,
         "diklat_terakhir": diklat_terakhir,
         "file_exists_diklat": file_exists_diklat,

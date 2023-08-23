@@ -107,49 +107,184 @@
         {% endfor %}
         {% endif %}
         <div class="row">
-            <div class="col-sm-4">
-                <div class="card text-center">
-                    <div class="card-body">
-                        <!-- Tampilkan pesan jika profil belum dilengkapi -->
-                        {% if not pegawai %}
-                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                            Data Profil Anda belum lengkap! Silahkan melengkapi Data Profil Anda!
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                        {% endif %}
-                        <!-- Tampilkan data pegawai -->
-                        <div class="container-fluid">
-                            <!-- Button trigger modal edit profil -->
-                            <div class="container-fluid text-end">
-                                <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#editProfil">
-                                    <i class="bi bi-pencil-square"></i>
-                                </button>
+            <div class="col">
+                <div class="card">
+                    <div class="card-header">
+                        <nav>
+                            <div class="nav nav-tabs card-header-tabs" id="nav-tab" role="tablist">
+                                <button class="nav-link active" id="nav-user-tab" data-bs-toggle="tab" data-bs-target="#nav-user" type="button" role="tab" aria-controls="nav-user" aria-selected="true">User</button>
+                                <button class="nav-link" id="nav-pegawai-tab" data-bs-toggle="tab" data-bs-target="#nav-pegawai" type="button" role="tab" aria-controls="nav-pegawai" aria-selected="true">Pegawai</button>
+                                <button class="nav-link" id="nav-pendidikan-tab" data-bs-toggle="tab" data-bs-target="#nav-pendidikan" type="button" role="tab" aria-controls="nav-pendidikan" aria-selected="true">Pendidikan</button>
+                                <button class="nav-link" id="nav-jabatan-tab" data-bs-toggle="tab" data-bs-target="#nav-jabatan" type="button" role="tab" aria-controls="nav-jabatan" aria-selected="false">Jabatan</button>
+                                <button class="nav-link" id="nav-pangkat-tab" data-bs-toggle="tab" data-bs-target="#nav-pangkat" type="button" role="tab" aria-controls="nav-pangkat" aria-selected="false">Pangkat & Golongan</button>
+                                <button class="nav-link" id="nav-angkakredit-tab" data-bs-toggle="tab" data-bs-target="#nav-angkakredit" type="button" role="tab" aria-controls="nav-angkakredit" aria-selected="false">Angka Kredit</button>
+                                <button class="nav-link" id="nav-diklat-tab" data-bs-toggle="tab" data-bs-target="#nav-diklat" type="button" role="tab" aria-controls="nav-diklat" aria-selected="false">Diklat</button>
                             </div>
-                            <!-- Modal edit profil -->
-                            <div class="modal fade" id="editProfil" tabindex="-1" aria-labelledby="editProfilLabel" aria-hidden="true">
-                                <div class="modal-dialog modal-dialog-centered">
-                                    <div class="modal-content">
-                                        <form method="post" action="{% url 'add_pegawai' %}">
-                                            {% csrf_token %}
-                                            <div class="modal-header">
-                                                <h1 class="modal-title fs-5" id="editProfilLabel">Edit Profil</h1>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                            </div>
-                                            <div class="modal-body">
-                                                <!-- Tampilkan data pegawai -->
-                                                <div class="pegawai">
-                                                    {% if pegawai %}
-                                                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                                                        Data Profil Anda sudah lengkap!
-                                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </nav>
+                    </div>
+                    <div class="card-body">
+                        {% if pegawai %}
+                        <div class="tab-content" id="nav-tabContent">
+                            <!-- TAB USER -->
+                            <div class="tab-pane fade show active" id="nav-user" role="tabpanel" aria-labelledby="nav-user-tab" tabindex="0">
+                                <div class="row">
+                                    <div class="col d-flex align-items-center">
+                                        <h3 class="card-title">Tabel User</h3>
+                                    </div>
+                                    <div class="col d-flex justify-content-end">
+                                        <!-- Button trigger modal tambah user -->
+                                        <button type="button" class="btn btn-primary my-3" data-bs-toggle="modal" data-bs-target="#tambahUser">
+                                            <i class="bi bi-plus-square"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <!-- Modal tambah riwayat user -->
+                                <div class="modal fade" id="tambahUser" tabindex="-1" aria-labelledby="tambahUserLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <form method="post" action="{% url 'add_user' %}" enctype="multipart/form-data">
+                                                {% csrf_token %}
+                                                <div class="modal-header">
+                                                    <h1 class="modal-title fs-5" id="tambahUserLabel">Tambah User</h1>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    {% csrf_token %}
+                                                    <div class="form-floating mb-1">
+                                                        <input name="username" type="text" class="form-control" id="floatingInputUsername" placeholder="Username" required>
+                                                        <label for="floatingInputUsername">Username</label>
                                                     </div>
-                                                    {% else %}
-                                                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                                        Data Profil Anda belum lengkap! Silahkan melengkapi Data Profil Anda!
-                                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                                    <div class="form-floating mb-1">
+                                                        <input name="password" type="password" class="form-control" id="floatingInputPassword" placeholder="Password" required>
+                                                        <label for="floatingInputPassword">Password</label>
                                                     </div>
-                                                    {% endif %}
-                                                    <div class="form-floating mb-1" hidden>
+                                                    <div class="form-floating mb-1">
+                                                        <input name="email" type="email" class="form-control" id="floatingInputEmail" placeholder="Email" required>
+                                                        <label for="floatingInputEmail">Email</label>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                                                    <button type="submit" class="btn btn-primary">Simpan</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                <table id="tabelUser" class="table">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">#</th>
+                                            <th scope="col">Username</th>
+                                            <th scope="col">Password</th>
+                                            <th scope="col">Email</th>
+                                            <th scope="col">Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="table-group-divider">
+                                        {% if dataUser %}
+                                        {% for us in dataUser %}
+                                        <tr>
+                                            <th class="align-middle" scope="row">{{ forloop.counter }}</th>
+                                            <td class="align-middle">{{ us.username }}</td>
+                                            <td class="align-middle">{{ us.password }}</td>
+                                            <td class="align-middle">{{ us.email }}</td>
+                                            <td class="align-middle">
+                                                <!-- Button trigger modal edit user -->
+                                                <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#editUser{{ us.id }}">
+                                                    <i class="bi bi-pencil"></i>
+                                                </button>
+                                                <!-- Modal edit pegawai -->
+                                                <div class="modal fade" id="editUser{{ us.id }}" tabindex="-1" aria-labelledby="editUserLabel{{ us.id }}" aria-hidden="true">
+                                                    <div class="modal-dialog modal-dialog-centered">
+                                                        <div class="modal-content">
+                                                            <form method="post" action="{% url 'edit_user' us.id %}" enctype="multipart/form-data">
+                                                                <div class="modal-header">
+                                                                    <h1 class="modal-title fs-5" id="editUserLabel{{ us.id }}">Edit User</h1>
+                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    {% csrf_token %}
+                                                                    <div class="form-floating mb-1">
+                                                                        <input name="username" type="text" class="form-control" id="floatingInputUsername" placeholder="Username" value="{{ us.username }}" required>
+                                                                        <label for="floatingInputUsername">Username</label>
+                                                                    </div>
+                                                                    <div class="form-floating mb-1">
+                                                                        <input name="password" type="password" class="form-control" id="floatingInputPassword" placeholder="Password" value="{{ us.password }}" required>
+                                                                        <label for="floatingInputPassword">Password</label>
+                                                                    </div>
+                                                                    <div class="form-floating mb-1">
+                                                                        <input name="email" type="email" class="form-control" id="floatingInputEmail" placeholder="Email" value="{{ us.email }}" required>
+                                                                        <label for="floatingInputEmail">Email</label>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                                                                    <button type="submit" class="btn btn-primary">Simpan</button>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <!-- Button trigger modal hapus user -->
+                                                <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#deleteUser{{ us.id }}">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                                <!-- Modal hapus pegawai -->
+                                                <form action="{% url 'delete_user' us.id %}" method="post">
+                                                    {% csrf_token %}
+                                                    <!-- Modal -->
+                                                    <div class="modal fade" id="deleteUser{{ us.id }}" tabindex="-1" aria-labelledby="deleteUserLabel{{ us.id }}" aria-hidden="true">
+                                                        <div class="modal-dialog modal-dialog-centered">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h1 class="modal-title fs-5" id="deleteUserLabel{{ us.id }}">Hapus User</h1>
+                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    Apakah Anda yakin menghapus Data User ini?
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                                                    <button type="submit" class="btn btn-danger">Hapus</button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                        {% endif %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <!-- TAB PEGAWAI -->
+                            <div class="tab-pane fade" id="nav-pegawai" role="tabpanel" aria-labelledby="nav-pegawai-tab" tabindex="0">
+                                <div class="row">
+                                    <div class="col d-flex align-items-center">
+                                        <h3 class="card-title">Tabel Pegawai</h3>
+                                    </div>
+                                    <div class="col d-flex justify-content-end">
+                                        <!-- Button trigger modal tambah pegawai -->
+                                        <button type="button" class="btn btn-primary my-3" data-bs-toggle="modal" data-bs-target="#tambahPegawai">
+                                            <i class="bi bi-plus-square"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <!-- Modal tambah riwayat pegawai -->
+                                <div class="modal fade" id="tambahPegawai" tabindex="-1" aria-labelledby="tambahPegawaiLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <form method="post" action="{% url 'add_data_pegawai' %}" enctype="multipart/form-data">
+                                                {% csrf_token %}
+                                                <div class="modal-header">
+                                                    <h1 class="modal-title fs-5" id="tambahPegawaiLabel">Tambah Pegawai</h1>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    {% csrf_token %}
+                                                    <div class="form-floating mb-1">
                                                         <select name="aktif_pegawai" class="form-select" id="floatingSelectStatusPegawai" aria-label="Pilih Status Pegawai" required>
                                                             <option value="0">Tidak Aktif</option>
                                                             <option value="1" selected>Aktif</option>
@@ -157,103 +292,198 @@
                                                         <label for="floatingSelectStatusPegawai">Status Pegawai</label>
                                                     </div>
                                                     <div class="form-floating mb-1">
-                                                        <input name="nip_pegawai" type="number" class="form-control" id="floatingInputNIP" placeholder="Nomor Induk Pegawai" value="{{ pegawai.nip_pegawai }}" required>
+                                                        <input name="nip_pegawai" type="number" class="form-control" id="floatingInputNIP" placeholder="Nomor Induk Pegawai" required>
                                                         <label for="floatingInputNIP">NIP</label>
                                                     </div>
                                                     <div class="form-floating mb-1">
-                                                        <input name="nama_pegawai" type="text" class="form-control" id="floatingInputNama" placeholder="Nama Lengkap" value="{{ pegawai.nama_pegawai }}" required>
+                                                        <input name="nama_pegawai" type="text" class="form-control" id="floatingInputNama" placeholder="Nama Lengkap" required>
                                                         <label for="floatingInputNama">Nama</label>
                                                     </div>
                                                     <div class="form-floating mb-1">
-                                                        <input name="tempat_lahir_pegawai" type="text" class="form-control" id="floatingInputTempatLahir" placeholder="Tempat Lahir" value="{{ pegawai.tempat_lahir_pegawai }}" required>
+                                                        <input name="tempat_lahir_pegawai" type="text" class="form-control" id="floatingInputTempatLahir" placeholder="Tempat Lahir" required>
                                                         <label for="floatingInputTempatLahir">Tempat Lahir</label>
                                                     </div>
                                                     <div class="form-floating mb-1">
-                                                        <input name="tanggal_lahir_pegawai" type="date" class="form-control" id="floatingInputTanggalLahir" placeholder="Tanggal Lahir" value="{{ tanggal_lahir_pegawai }}" required>
+                                                        <input name="tanggal_lahir_pegawai" type="date" class="form-control" id="floatingInputTanggalLahir" placeholder="Tanggal Lahir" required>
                                                         <label for="floatingInputTanggalLahir">Tanggal Lahir</label>
                                                     </div>
                                                     <div class="form-floating mb-1">
                                                         <select name="jenis_kelamin_pegawai" class="form-select" id="floatingSelectSex" aria-label="Pilih Jenis Kelamin" required>
-                                                            <option value="" {% if not pegawai.jenis_kelamin_pegawai %}selected{% endif %}> ...</option>
-                                                            <option value="Laki-Laki" {% if pegawai.jenis_kelamin_pegawai == "Laki-Laki" %}selected{% endif %}>Laki-Laki</option>
-                                                            <option value="Perempuan" {% if pegawai.jenis_kelamin_pegawai == "Perempuan" %}selected{% endif %}>Perempuan</option>
+                                                            <option value="" selected>...</option>
+                                                            <option value="Laki-Laki">Laki-Laki</option>
+                                                            <option value="Perempuan">Perempuan</option>
                                                         </select>
                                                         <label for="floatingSelectSex">Jenis Kelamin</label>
                                                     </div>
                                                     <div class="form-floating mb-1">
-                                                        <input name="surel_pegawai" type="email" class="form-control" id="floatingInputSurel" placeholder="nama@contoh.com" value="{{ pegawai.surel_pegawai }}" required>
+                                                        <input name="surel_pegawai" type="email" class="form-control" id="floatingInputSurel" placeholder="nama@contoh.com" required>
                                                         <label for="floatingInputSurel">Alamat Surel</label>
                                                     </div>
                                                     <div class="form-floating mb-1">
-                                                        <input name="telepon_pegawai" type="text" class="form-control" id="floatingInputTelepon" placeholder="Telepon" value="{{ pegawai.telepon_pegawai }}" required>
+                                                        <input name="telepon_pegawai" type="text" class="form-control" id="floatingInputTelepon" placeholder="Telepon" required>
                                                         <label for="floatingInputTelepon">Telepon</label>
                                                     </div>
+                                                    <div class="form-floating mb-1">
+                                                        <select name="user" class="form-select" id="floatingSelectUser" aria-label="Pilih User" required>
+                                                            {% if dataUser %}
+                                                            {% for us in dataUser %}
+                                                            <option value="{{ us.id }}">{{ us.username }}</option>
+                                                            {% endfor %}
+                                                            {% endif %}
+                                                        </select>
+                                                        <label for="floatingSelectUser">Daftar User</label>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                                                <button type="submit" class="btn btn-primary">Simpan</button>
-                                            </div>
-                                        </form>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                                                    <button type="submit" class="btn btn-primary">Simpan</button>
+                                                </div>
+                                            </form>
+                                        </div>
                                     </div>
                                 </div>
+                                <table id="tabelPegawai" class="table">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">#</th>
+                                            <th scope="col">NIP</th>
+                                            <th scope="col">Nama</th>
+                                            <th scope="col">Tempat Lahir</th>
+                                            <th scope="col">Tanggal Lahir</th>
+                                            <th scope="col">Jenis Kelamin</th>
+                                            <th scope="col">Alamat Surel</th>
+                                            <th scope="col">Telepon</th>
+                                            <th scope="col">Aktif</th>
+                                            <th scope="col">User</th>
+                                            <th scope="col">Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="table-group-divider">
+                                        {% if pegawai %}
+                                        {% for peg in pegawai %}
+                                        <tr>
+                                            <th class="align-middle" scope="row">{{ forloop.counter }}</th>
+                                            <td class="align-middle">{{ peg.nip_pegawai }}</td>
+                                            <td class="align-middle">{{ peg.nama_pegawai }}</td>
+                                            <td class="align-middle">{{ peg.tempat_lahir_pegawai }}</td>
+                                            <td class="align-middle">{{ peg.tanggal_lahir_pegawai }}</td>
+                                            <td class="align-middle">{{ peg.jenis_kelamin_pegawai }}</td>
+                                            <td class="align-middle">{{ peg.surel_pegawai }}</td>
+                                            <td class="align-middle">{{ peg.telepon_pegawai }}</td>
+                                            <td class="align-middle">{{ peg.aktif_pegawai }}</td>
+                                            <td class="align-middle">{{ peg.user }}</td>
+                                            <td class="align-middle">
+                                                <!-- Button trigger modal edit pegawai -->
+                                                <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#editPegawai{{ peg.id_pegawai }}">
+                                                    <i class="bi bi-pencil"></i>
+                                                </button>
+                                                <!-- Modal edit pegawai -->
+                                                <div class="modal fade" id="editPegawai{{ peg.id_pegawai }}" tabindex="-1" aria-labelledby="editPegawaiLabel{{ peg.id_pegawai }}" aria-hidden="true">
+                                                    <div class="modal-dialog modal-dialog-centered">
+                                                        <div class="modal-content">
+                                                            <form method="post" action="{% url 'edit_pegawai' peg.id_pegawai %}" enctype="multipart/form-data">
+                                                                <div class="modal-header">
+                                                                    <h1 class="modal-title fs-5" id="editPegawaiLabel{{ peg.id_pegawai }}">Edit Pegawai</h1>
+                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    {% csrf_token %}
+                                                                    <div class="form-floating mb-1">
+                                                                        <select name="aktif_pegawai" class="form-select" id="floatingSelectStatusPegawai" aria-label="Pilih Status Pegawai" required>
+                                                                            <option value="" disabled {% if not peg.jenis_kelamin_pegawai %}selected{% endif %}> ...</option>
+                                                                            <option value="0" {% if peg.aktif_pegawai == 0 %}selected{% endif %}>Tidak Aktif</option>
+                                                                            <option value="1" {% if peg.aktif_pegawai == 1 %}selected{% endif %}>Aktif</option>
+                                                                        </select>
+                                                                        <label for="floatingSelectStatusPegawai">Status Pegawai</label>
+                                                                    </div>
+                                                                    <div class="form-floating mb-1">
+                                                                        <input name="nip_pegawai" type="number" class="form-control" id="floatingInputNIP" placeholder="Nomor Induk Pegawai" value="{{ peg.nip_pegawai }}" required>
+                                                                        <label for="floatingInputNIP">NIP</label>
+                                                                    </div>
+                                                                    <div class="form-floating mb-1">
+                                                                        <input name="nama_pegawai" type="text" class="form-control" id="floatingInputNama" placeholder="Nama Lengkap" value="{{ peg.nama_pegawai }}" required>
+                                                                        <label for="floatingInputNama">Nama</label>
+                                                                    </div>
+                                                                    <div class="form-floating mb-1">
+                                                                        <input name="tempat_lahir_pegawai" type="text" class="form-control" id="floatingInputTempatLahir" placeholder="Tempat Lahir" value="{{ peg.tempat_lahir_pegawai }}" required>
+                                                                        <label for="floatingInputTempatLahir">Tempat Lahir</label>
+                                                                    </div>
+                                                                    <div class="form-floating mb-1">
+                                                                        <input name="tanggal_lahir_pegawai" type="date" class="form-control" id="floatingInputTanggalLahir" placeholder="Tanggal Lahir" value="{{ peg.tanggal_lahir_pegawai|date:'Y-m-d' }}" required>
+                                                                        <label for="floatingInputTanggalLahir">Tanggal Lahir</label>
+                                                                    </div>
+                                                                    <div class="form-floating mb-1">
+                                                                        <select name="jenis_kelamin_pegawai" class="form-select" id="floatingSelectSex" aria-label="Pilih Jenis Kelamin" required>
+                                                                            <option value="" disabled {% if not peg.jenis_kelamin_pegawai %}selected{% endif %}> ...</option>
+                                                                            <option value="Laki-Laki" {% if peg.jenis_kelamin_pegawai == "Laki-Laki" %}selected{% endif %}>Laki-Laki</option>
+                                                                            <option value="Perempuan" {% if peg.jenis_kelamin_pegawai == "Perempuan" %}selected{% endif %}>Perempuan</option>
+                                                                        </select>
+                                                                        <label for="floatingSelectSex">Jenis Kelamin</label>
+                                                                    </div>
+                                                                    <div class="form-floating mb-1">
+                                                                        <input name="surel_pegawai" type="email" class="form-control" id="floatingInputSurel" placeholder="nama@contoh.com" value="{{ peg.surel_pegawai }}" required>
+                                                                        <label for="floatingInputSurel">Alamat Surel</label>
+                                                                    </div>
+                                                                    <div class="form-floating mb-1">
+                                                                        <input name="telepon_pegawai" type="text" class="form-control" id="floatingInputTelepon" placeholder="Telepon" value="{{ peg.telepon_pegawai }}" required>
+                                                                        <label for="floatingInputTelepon">Telepon</label>
+                                                                    </div>
+                                                                    <div class="form-floating mb-1">
+                                                                        <select name="user" class="form-select" id="floatingSelectUser" aria-label="Pilih User" required>
+                                                                            <option value="" disabled {% if not peg.user %}selected{% endif %}>Pilih User</option>
+                                                                            <option value="{{ peg.user.id }}" {% if peg.user %}selected{% endif %}>{{ peg.user }}</option>
+                                                                            {% for us in dataUser %}
+                                                                                {% if us.id != peg.user.id %}
+                                                                                    <option value="{{ us.id }}">{{ us.username }}</option>
+                                                                                {% endif %}
+                                                                            {% endfor %}
+                                                                        </select>
+                                                                        <label for="floatingSelectUser">Daftar User</label>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                                                                    <button type="submit" class="btn btn-primary">Simpan</button>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <!-- Button trigger modal hapus pegawai -->
+                                                <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#deletePegawai{{ peg.id_pegawai }}">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                                <!-- Modal hapus pegawai -->
+                                                <form action="{% url 'delete_pegawai' peg.id_pegawai %}" method="post">
+                                                    {% csrf_token %}
+                                                    <!-- Modal -->
+                                                    <div class="modal fade" id="deletePegawai{{ peg.id_pegawai }}" tabindex="-1" aria-labelledby="deletePegawaiLabel{{ peg.id_pegawai }}" aria-hidden="true">
+                                                        <div class="modal-dialog modal-dialog-centered">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h1 class="modal-title fs-5" id="deletePegawaiLabel{{ peg.id_pegawai }}">Hapus Pegawai</h1>
+                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    Apakah Anda yakin menghapus Data Pegawai ini?
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                                                    <button type="submit" class="btn btn-danger">Hapus</button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                        {% endif %}
+                                    </tbody>
+                                </table>
                             </div>
-                        </div>
-                        <i class="bi bi-file-person profile-icon"></i>
-                        <h4 class="card-title">{{ pegawai.nama_pegawai }}</h4>
-                        <p class="card-text text-body-tertiary">NIP. {{ pegawai.nip_pegawai }}</p>
-                        <div class="container text-start">
-                            <div class="row border-bottom mb-3">
-                                {% if pegawai.aktif_pegawai %}
-                                <h5>
-                                    <i class="bi bi-person-check"></i>
-                                    Status Pegawai
-                                </h5>
-                                <p class="card-text text-body-tertiary fs-6 fw-lighter">Aktif</p>
-                                {% else %}
-                                <h5>
-                                    <i class="bi bi-person-dash"></i>
-                                    Status Pegawai
-                                </h5>
-                                <p class="card-text text-body-tertiary fs-6 fw-lighter">Tidak Aktif</p>
-                                {% endif %}
-                            </div>
-                            <div class="row border-bottom mb-3">
-                                <h5>
-                                    <i class="bi bi-bookmark-star"></i>
-                                    Pangkat & Golongan
-                                </h5>
-                                <p class="card-text text-body-tertiary fs-6 fw-lighter">{{ pangkat_terakhir.nama_pangkat }} / {{ pangkat_terakhir.get_nama_pangkat_display }}</p>
-                            </div>
-                            <div class="row border-bottom mb-3">
-                                <h5>
-                                    <i class="bi bi-briefcase"></i>
-                                    Jabatan
-                                </h5>
-                                <p class="card-text text-body-tertiary fs-6 fw-lighter">{{ jabatan_terakhir.get_nama_jabatan_display }}</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-8">
-                <div class="card">
-                    <div class="card-header">
-                        <nav>
-                            <div class="nav nav-tabs card-header-tabs" id="nav-tab" role="tablist">
-                                <button class="nav-link active" id="nav-pendidikan-tab" data-bs-toggle="tab" data-bs-target="#nav-pendidikan" type="button" role="tab" aria-controls="nav-pendidikan" aria-selected="true">Riwayat Pendidikan</button>
-                                <button class="nav-link" id="nav-jabatan-tab" data-bs-toggle="tab" data-bs-target="#nav-jabatan" type="button" role="tab" aria-controls="nav-jabatan" aria-selected="false">Riwayat Jabatan</button>
-                                <button class="nav-link" id="nav-pangkat-tab" data-bs-toggle="tab" data-bs-target="#nav-pangkat" type="button" role="tab" aria-controls="nav-pangkat" aria-selected="false">Riwayat Pangkat & Golongan</button>
-                                <button class="nav-link" id="nav-angkakredit-tab" data-bs-toggle="tab" data-bs-target="#nav-angkakredit" type="button" role="tab" aria-controls="nav-angkakredit" aria-selected="false">Angka Kredit</button>
-                                <button class="nav-link" id="nav-diklat-tab" data-bs-toggle="tab" data-bs-target="#nav-diklat" type="button" role="tab" aria-controls="nav-diklat" aria-selected="false">Riwayat Diklat</button>
-                            </div>
-                        </nav>
-                    </div>
-                    <div class="card-body">
-                        {% if pegawai %}
-                        <div class="tab-content" id="nav-tabContent">
                             <!-- TAB PENDIDIKAN -->
-                            <div class="tab-pane fade show active" id="nav-pendidikan" role="tabpanel" aria-labelledby="nav-pendidikan-tab" tabindex="0">
+                            <div class="tab-pane fade" id="nav-pendidikan" role="tabpanel" aria-labelledby="nav-pendidikan-tab" tabindex="0">
                                 <div class="row">
                                     <div class="col d-flex align-items-center">
                                         <h3 class="card-title">Tabel Riwayat Pendidikan</h3>
@@ -314,6 +544,16 @@
                                                         <label for="floatingTanggalTerbitIjazahPendidikan">Tanggal Terbit Ijazah Pendidikan*</label>
                                                     </div>
                                                     <div class="form-floating mb-1">
+                                                        <select name="user" class="form-select" id="floatingSelectUser" aria-label="Pilih User" required>
+                                                            {% if dataUser %}
+                                                            {% for us in dataUser %}
+                                                            <option value="{{ us.id }}">{{ us.username }}</option>
+                                                            {% endfor %}
+                                                            {% endif %}
+                                                        </select>
+                                                        <label for="floatingSelectUser">Daftar User</label>
+                                                    </div>
+                                                    <div class="form-floating mb-1">
                                                         <input name="file_ijazah_pendidikan" type="file" class="form-control" id="floatingFileIjazahPendidikan*" required>
                                                         <label for="floatingFileIjazahPendidikan">File Ijazah Pendidikan*</label>
                                                     </div>
@@ -334,6 +574,7 @@
                                             <th scope="col">Lembaga</th>
                                             <th scope="col">Jurusan</th>
                                             <th scope="col">Tanggal Terbit Ijazah</th>
+                                            <th scope="col">User</th>
                                             <th scope="col">File Ijazah</th>
                                             <th scope="col">Aksi</th>
                                         </tr>
@@ -347,6 +588,7 @@
                                             <td class="align-middle">{{ pend.lembaga_pendidikan }}</td>
                                             <td class="align-middle">{{ pend.jurusan_pendidikan }}</td>
                                             <td class="align-middle">{{ pend.tanggal_terbit_ijazah_pendidikan }}</td>
+                                            <td class="align-middle">{{ pend.user }}</td>
                                             <td class="align-middle">
                                                 <!-- Button trigger link lihat file ijazah -->
                                                 <a href="{% url 'download_ijazah' pend.id_pendidikan %}" class="btn" target="_blank">
@@ -402,8 +644,20 @@
                                                                         <label for="floatingNomorSeriIjazahPendidikan">Nomor Seri Ijazah Pendidikan*</label>
                                                                     </div>
                                                                     <div class="form-floating mb-1">
-                                                                        <input name="tanggal_terbit_ijazah_pendidikan" type="date" class="form-control" id="floatingTanggalTerbitIjazahPendidikan" placeholder="Tanggal Terbit Ijazah Pendidikan*" value="{{ pend.tanggal_terbit_ijazah_pendidikan }}" required>
+                                                                        <input name="tanggal_terbit_ijazah_pendidikan" type="date" class="form-control" id="floatingTanggalTerbitIjazahPendidikan" placeholder="Tanggal Terbit Ijazah Pendidikan*" value="{{ pend.tanggal_terbit_ijazah_pendidikan|date:'Y-m-d' }}" required>
                                                                         <label for="floatingTanggalTerbitIjazahPendidikan">Tanggal Terbit Ijazah Pendidikan*</label>
+                                                                    </div>
+                                                                    <div class="form-floating mb-1">
+                                                                        <select name="user" class="form-select" id="floatingSelectUser" aria-label="Pilih User" required>
+                                                                            <option value="" disabled {% if not pend.user %}selected{% endif %}>Pilih User</option>
+                                                                            <option value="{{ pend.user.id }}" {% if pend.user %}selected{% endif %}>{{ pend.user }}</option>
+                                                                            {% for us in dataUser %}
+                                                                                {% if us.id != pend.user.id %}
+                                                                                    <option value="{{ us.id }}">{{ us.username }}</option>
+                                                                                {% endif %}
+                                                                            {% endfor %}
+                                                                        </select>
+                                                                        <label for="floatingSelectUser">Daftar User</label>
                                                                     </div>
                                                                     <div class="form-floating mb-1">
                                                                         <input name="file_ijazah_pendidikan" type="file" class="form-control" id="floatingFileIjazahPendidikan" required>
@@ -523,6 +777,16 @@
                                                         <label for="floatingTMTJabatan">TMT Jabatan*</label>
                                                     </div>
                                                     <div class="form-floating mb-1">
+                                                        <select name="user" class="form-select" id="floatingSelectUser" aria-label="Pilih User" required>
+                                                            {% if dataUser %}
+                                                            {% for us in dataUser %}
+                                                            <option value="{{ us.id }}">{{ us.username }}</option>
+                                                            {% endfor %}
+                                                            {% endif %}
+                                                        </select>
+                                                        <label for="floatingSelectUser">Daftar User</label>
+                                                    </div>
+                                                    <div class="form-floating mb-1">
                                                         <input name="file_sk_jabatan" type="file" class="form-control" id="floatingFileSKJabatan*" required>
                                                         <label for="floatingFileSKJabatan">File SK Jabatan*</label>
                                                     </div>
@@ -543,6 +807,7 @@
                                             <th scope="col">Nomor SK</th>
                                             <th scope="col">Tanggal SK</th>
                                             <th scope="col">TMT</th>
+                                            <th scope="col">User</th>
                                             <th scope="col">File SK</th>
                                             <th scope="col">Aksi</th>
                                         </tr>
@@ -556,6 +821,7 @@
                                             <td class="align-middle">{{ jab.nomor_sk_jabatan }}</td>
                                             <td class="align-middle">{{ jab.tanggal_sk_jabatan }}</td>
                                             <td class="align-middle">{{ jab.tmt_jabatan }}</td>
+                                            <td class="align-middle">{{ jab.user }}</td>
                                             <td class="align-middle">
                                                 <!-- Button trigger link lihat file sk jabatan -->
                                                 <a href="{% url 'download_sk_jabatan' jab.id_jabatan %}" class="btn" target="_blank">
@@ -591,12 +857,24 @@
                                                                         <label for="floatingNomorSKJabatan">Nomor SK Jabatan*</label>
                                                                     </div>
                                                                     <div class="form-floating mb-1">
-                                                                        <input name="tanggal_sk_jabatan" type="date" class="form-control" id="floatingTanggalSKJabatan" placeholder="Tanggal SK Jabatan*" value="{{ jab.tanggal_sk_jabatan }}" required>
+                                                                        <input name="tanggal_sk_jabatan" type="date" class="form-control" id="floatingTanggalSKJabatan" placeholder="Tanggal SK Jabatan*" value="{{ jab.tanggal_sk_jabatan|date:'Y-m-d' }}" required>
                                                                         <label for="floatingTanggalSKJabatan">Tanggal SK Jabatan*</label>
                                                                     </div>
                                                                     <div class="form-floating mb-1">
-                                                                        <input name="tmt_jabatan" type="text" class="form-control" id="floatingTMTJabatan" placeholder="TMT Jabatan*" value="{{ jab.tmt_jabatan }}" required>
+                                                                        <input name="tmt_jabatan" type="date" class="form-control" id="floatingTMTJabatan" placeholder="TMT Jabatan*" value="{{ jab.tmt_jabatan|date:'Y-m-d' }}" required>
                                                                         <label for="floatingTMTJabatan">TMT Jabatan*</label>
+                                                                    </div>
+                                                                    <div class="form-floating mb-1">
+                                                                        <select name="user" class="form-select" id="floatingSelectUser" aria-label="Pilih User" required>
+                                                                            <option value="" disabled {% if not jab.user %}selected{% endif %}>Pilih User</option>
+                                                                            <option value="{{ jab.user.id }}" {% if jab.user %}selected{% endif %}>{{ jab.user }}</option>
+                                                                            {% for us in dataUser %}
+                                                                                {% if us.id != jab.user.id %}
+                                                                                    <option value="{{ us.id }}">{{ us.username }}</option>
+                                                                                {% endif %}
+                                                                            {% endfor %}
+                                                                        </select>
+                                                                        <label for="floatingSelectUser">Daftar User</label>
                                                                     </div>
                                                                     <div class="form-floating mb-1">
                                                                         <input name="file_sk_jabatan" type="file" class="form-control" id="floatingFileSKJabatan" required>
@@ -716,6 +994,16 @@
                                                         <label for="floatingTMTPangkat">TMT Pangkat & Golongan*</label>
                                                     </div>
                                                     <div class="form-floating mb-1">
+                                                        <select name="user" class="form-select" id="floatingSelectUser" aria-label="Pilih User" required>
+                                                            {% if dataUser %}
+                                                            {% for us in dataUser %}
+                                                            <option value="{{ us.id }}">{{ us.username }}</option>
+                                                            {% endfor %}
+                                                            {% endif %}
+                                                        </select>
+                                                        <label for="floatingSelectUser">Daftar User</label>
+                                                    </div>
+                                                    <div class="form-floating mb-1">
                                                         <input name="file_sk_pangkat" type="file" class="form-control" id="floatingFileSKPangkat" required>
                                                         <label for="floatingFileSKPangkat">File SK Pangkat & Golongan*</label>
                                                     </div>
@@ -736,6 +1024,7 @@
                                             <th scope="col">Nomor SK</th>
                                             <th scope="col">Tanggal SK</th>
                                             <th scope="col">TMT</th>
+                                            <th scope="col">User</th>
                                             <th scope="col">File SK</th>
                                             <th scope="col">Aksi</th>
                                         </tr>
@@ -749,6 +1038,7 @@
                                             <td class="align-middle">{{ pang.nomor_sk_pangkat }}</td>
                                             <td class="align-middle">{{ pang.tanggal_sk_pangkat }}</td>
                                             <td class="align-middle">{{ pang.tmt_pangkat }}</td>
+                                            <td class="align-middle">{{ pang.user }}</td>
                                             <td class="align-middle">
                                                 <!-- Button trigger link lihat file sk pangkat -->
                                                 <a href="{% url 'download_sk_pangkat' pang.id_pangkat %}" class="btn" target="_blank">
@@ -784,12 +1074,24 @@
                                                                         <label for="floatingNomorSKPangkat">Nomor SK Pangkat & Golongan*</label>
                                                                     </div>
                                                                     <div class="form-floating mb-1">
-                                                                        <input name="tanggal_sk_pangkat" type="date" class="form-control" id="floatingTanggalSKPangkat" placeholder="Tanggal SK Pangkat & Golongan*" value="{{ pang.tanggal_sk_pangkat }}" required>
+                                                                        <input name="tanggal_sk_pangkat" type="date" class="form-control" id="floatingTanggalSKPangkat" placeholder="Tanggal SK Pangkat & Golongan*" value="{{ pang.tanggal_sk_pangkat|date:'Y-m-d' }}" required>
                                                                         <label for="floatingTanggalSKPangkat">Tanggal SK Pangkat & Golongan*</label>
                                                                     </div>
                                                                     <div class="form-floating mb-1">
-                                                                        <input name="tmt_pangkat" type="date" class="form-control" id="floatingTMTPangkat" placeholder="TMT Pangkat & Golongan*" value="{{ pang.tmt_pangkat }}" required>
+                                                                        <input name="tmt_pangkat" type="date" class="form-control" id="floatingTMTPangkat" placeholder="TMT Pangkat & Golongan*" value="{{ pang.tmt_pangkat|date:'Y-m-d' }}" required>
                                                                         <label for="floatingTMTPangkat">TMT Pangkat & Golongan*</label>
+                                                                    </div>
+                                                                    <div class="form-floating mb-1">
+                                                                        <select name="user" class="form-select" id="floatingSelectUser" aria-label="Pilih User" required>
+                                                                            <option value="" disabled {% if not pang.user %}selected{% endif %}>Pilih User</option>
+                                                                            <option value="{{ pang.user.id }}" {% if pang.user %}selected{% endif %}>{{ pang.user }}</option>
+                                                                            {% for us in dataUser %}
+                                                                                {% if us.id != pang.user.id %}
+                                                                                    <option value="{{ us.id }}">{{ us.username }}</option>
+                                                                                {% endif %}
+                                                                            {% endfor %}
+                                                                        </select>
+                                                                        <label for="floatingSelectUser">Daftar User</label>
                                                                     </div>
                                                                     <div class="form-floating mb-1">
                                                                         <input name="file_sk_pangkat" type="file" class="form-control" id="floatingFileSKPangkat" required>
@@ -905,6 +1207,16 @@
                                                         <label for="floatingSelectMasaPenilaianPAK">Masa Penilaian PAK*</label>
                                                     </div>
                                                     <div class="form-floating mb-1">
+                                                        <select name="user" class="form-select" id="floatingSelectUser" aria-label="Pilih User" required>
+                                                            {% if dataUser %}
+                                                            {% for us in dataUser %}
+                                                            <option value="{{ us.id }}">{{ us.username }}</option>
+                                                            {% endfor %}
+                                                            {% endif %}
+                                                        </select>
+                                                        <label for="floatingSelectUser">Daftar User</label>
+                                                    </div>
+                                                    <div class="form-floating mb-1">
                                                         <input name="file_pak" type="file" class="form-control" id="floatingFilePAK" required>
                                                         <label for="floatingFilePAK">File PAK*</label>
                                                     </div>
@@ -925,6 +1237,7 @@
                                             <th scope="col">Tanggal</th>
                                             <th scope="col">Nilai</th>
                                             <th scope="col">Masa Penilaian</th>
+                                            <th scope="col">User</th>
                                             <th scope="col">File SK</th>
                                             <th scope="col">Aksi</th>
                                         </tr>
@@ -938,6 +1251,7 @@
                                             <td class="align-middle">{{ angka.tanggal_pak }}</td>
                                             <td class="align-middle">{{ angka.nilai_pak }}</td>
                                             <td class="align-middle">{{ angka.masa_penilaian_pak }}</td>
+                                            <td class="align-middle">{{ angka.user }}</td>
                                             <td class="align-middle">
                                                 <!-- Button trigger link lihat file pak -->
                                                 <a href="{% url 'download_file_pak' angka.id_pak %}" class="btn" target="_blank">
@@ -965,7 +1279,7 @@
                                                                         <label for="floatingNomorPAK">Nomor PAK*</label>
                                                                     </div>
                                                                     <div class="form-floating mb-1">
-                                                                        <input name="tanggal_pak" type="date" class="form-control" id="floatingTanggalPAK" placeholder="Tanggal PAK*" value="{{ angka.tanggal_pak }}" required>
+                                                                        <input name="tanggal_pak" type="date" class="form-control" id="floatingTanggalPAK" placeholder="Tanggal PAK*" value="{{ angka.tanggal_pak|date:'Y-m-d' }}" required>
                                                                         <label for="floatingTanggalPAK">Tanggal PAK*</label>
                                                                     </div>
                                                                     <div class="form-floating mb-1">
@@ -975,6 +1289,18 @@
                                                                     <div class="form-floating mb-1">
                                                                         <input name="masa_penilaian_pak" type="date" class="form-control" id="floatingSelectMasaPenilaianPAK" placeholder="Masa Penilaian PAK*" value="{{ angka.masa_penilaian_pak|date:'Y-m-d' }}" required>
                                                                         <label for="floatingSelectMasaPenilaianPAK">Masa Penilaian PAK*</label>
+                                                                    </div>
+                                                                    <div class="form-floating mb-1">
+                                                                        <select name="user" class="form-select" id="floatingSelectUser" aria-label="Pilih User" required>
+                                                                            <option value="" disabled {% if not angka.user %}selected{% endif %}>Pilih User</option>
+                                                                            <option value="{{ angka.user.id }}" {% if angka.user %}selected{% endif %}>{{ angka.user }}</option>
+                                                                            {% for us in dataUser %}
+                                                                                {% if us.id != angka.user.id %}
+                                                                                    <option value="{{ us.id }}">{{ us.username }}</option>
+                                                                                {% endif %}
+                                                                            {% endfor %}
+                                                                        </select>
+                                                                        <label for="floatingSelectUser">Daftar User</label>
                                                                     </div>
                                                                     <div class="form-floating mb-1">
                                                                         <input name="file_pak" type="file" class="form-control" id="floatingFilePAK" required>
@@ -1090,6 +1416,16 @@
                                                         <label for="floatingNomorSertifikatDiklat">Nomor Sertifikat Diklat*</label>
                                                     </div>
                                                     <div class="form-floating mb-1">
+                                                        <select name="user" class="form-select" id="floatingSelectUser" aria-label="Pilih User" required>
+                                                            {% if dataUser %}
+                                                            {% for us in dataUser %}
+                                                            <option value="{{ us.id }}">{{ us.username }}</option>
+                                                            {% endfor %}
+                                                            {% endif %}
+                                                        </select>
+                                                        <label for="floatingSelectUser">Daftar User</label>
+                                                    </div>
+                                                    <div class="form-floating mb-1">
                                                         <input name="tanggal_sertifikat_diklat" type="date" class="form-control" id="floatingTanggalSertifikatDiklat" placeholder="Tanggal Sertifikat Diklat*" required>
                                                         <label for="floatingTanggalSertifikatDiklat">Tanggal Sertifikat Diklat*</label>
                                                     </div>
@@ -1115,6 +1451,7 @@
                                             <th scope="col">Tanggal Selesai</th>
                                             <th scope="col">Nomor Sertifikat</th>
                                             <th scope="col">Tanggal Sertifikat</th>
+                                            <th scope="col">User</th>
                                             <th scope="col">File Sertifikat</th>
                                             <th scope="col">Aksi</th>
                                         </tr>
@@ -1129,6 +1466,7 @@
                                             <td class="align-middle">{{ dik.tanggal_selesai_diklat }}</td>
                                             <td class="align-middle">{{ dik.nomor_sertifikat_diklat }}</td>
                                             <td class="align-middle">{{ dik.tanggal_sertifikat_diklat }}</td>
+                                            <td class="align-middle">{{ dik.user }}</td>
                                             <td class="align-middle">
                                                 <!-- Button trigger link lihat file sertifikat diklat -->
                                                 <a href="{% url 'download_file_diklat' dik.id_diklat %}" class="btn" target="_blank">
@@ -1156,11 +1494,11 @@
                                                                         <label for="floatingNamaDiklat">Nama Diklat*</label>
                                                                     </div>
                                                                     <div class="form-floating mb-1">
-                                                                        <input name="tanggal_mulai_diklat" type="date" class="form-control" id="floatingTanggalMulaiDiklat" placeholder="Tanggal Mulai Diklat*" value="{{ dik.tanggal_mulai_diklat }}" required>
+                                                                        <input name="tanggal_mulai_diklat" type="date" class="form-control" id="floatingTanggalMulaiDiklat" placeholder="Tanggal Mulai Diklat*" value="{{ dik.tanggal_mulai_diklat|date:'Y-m-d' }}" required>
                                                                         <label for="floatingTanggalMulaiDiklat">Tanggal Mulai Diklat*</label>
                                                                     </div>
                                                                     <div class="form-floating mb-1">
-                                                                        <input name="tanggal_selesai_diklat" type="date" class="form-control" id="floatingTanggalSelesaiDiklat" placeholder="Tanggal Selesai Diklat*" value="{{ dik.tanggal_selesai_diklat }}" required>
+                                                                        <input name="tanggal_selesai_diklat" type="date" class="form-control" id="floatingTanggalSelesaiDiklat" placeholder="Tanggal Selesai Diklat*" value="{{ dik.tanggal_selesai_diklat|date:'Y-m-d' }}" required>
                                                                         <label for="floatingTanggalSelesaiDiklat">Tanggal Selesai Diklat*</label>
                                                                     </div>
                                                                     <div class="form-floating mb-1">
@@ -1168,8 +1506,20 @@
                                                                         <label for="floatingNomorSertifikatDiklat">Nomor Sertifikat Diklat*</label>
                                                                     </div>
                                                                     <div class="form-floating mb-1">
-                                                                        <input name="tanggal_sertifikat_diklat" type="date" class="form-control" id="floatingTanggalSertifikatDiklat" placeholder="Tanggal Sertifikat Diklat*" value="{{ dik.tanggal_sertifikat_diklat }}" required>
+                                                                        <input name="tanggal_sertifikat_diklat" type="date" class="form-control" id="floatingTanggalSertifikatDiklat" placeholder="Tanggal Sertifikat Diklat*" value="{{ dik.tanggal_sertifikat_diklat|date:'Y-m-d' }}" required>
                                                                         <label for="floatingTanggalSertifikatDiklat">Tanggal Sertifikat Diklat*</label>
+                                                                    </div>
+                                                                    <div class="form-floating mb-1">
+                                                                        <select name="user" class="form-select" id="floatingSelectUser" aria-label="Pilih User" required>
+                                                                            <option value="" disabled {% if not dik.user %}selected{% endif %}>Pilih User</option>
+                                                                            <option value="{{ dik.user.id }}" {% if dik.user %}selected{% endif %}>{{ dik.user }}</option>
+                                                                            {% for us in dataUser %}
+                                                                                {% if us.id != dik.user.id %}
+                                                                                    <option value="{{ us.id }}">{{ us.username }}</option>
+                                                                                {% endif %}
+                                                                            {% endfor %}
+                                                                        </select>
+                                                                        <label for="floatingSelectUser">Daftar User</label>
                                                                     </div>
                                                                     <div class="form-floating mb-1">
                                                                         <input name="file_sertifikat_diklat" type="file" class="form-control" id="floatingFileSertifikatDiklat" required>
@@ -1259,6 +1609,8 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.js"></script>
     <script>
+        new DataTable('#tabelUser');
+        new DataTable('#tabelPegawai');
         new DataTable('#tabelPendidikan');
         new DataTable('#tabelJabatan');
         new DataTable('#tabelPangkat');

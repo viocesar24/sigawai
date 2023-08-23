@@ -8,7 +8,23 @@ urlpatterns = [
     path("beranda/", views.index, name="index"),
     path("signout/", views.signout, name="signout"),
     path("profil/", views.profile, name="profile"),
+    ##### PEGAWAI #####
     path("add_pegawai/", login_required(views.add_pegawai), name="add_pegawai"),
+    path(
+        "add_data_pegawai/",
+        login_required(views.add_data_pegawai),
+        name="add_data_pegawai",
+    ),
+    path(
+        "edit_pegawai/<int:id_pegawai>/",
+        login_required(views.edit_pegawai),
+        name="edit_pegawai",
+    ),
+    path(
+        "delete_pegawai/<int:id_pegawai>/",
+        login_required(views.delete_pegawai),
+        name="delete_pegawai",
+    ),
     ##### PENDIDIKAN #####
     path(
         "add_pendidikan/", login_required(views.add_pendidikan), name="add_pendidikan"
@@ -95,5 +111,34 @@ urlpatterns = [
         "download_file_diklat/<int:id_diklat>/",
         login_required(views.download_file_diklat),
         name="download_file_diklat",
+    ),
+    ##### EKSPOR IMPOR EXCEL #####
+    path(
+        "export_to_excel/",
+        login_required(views.export_to_excel),
+        name="export_to_excel",
+    ),
+    path(
+        "import_from_excel/",
+        login_required(views.import_from_excel),
+        name="import_from_excel",
+    ),
+    ##### HALAMAN ADMIN #####
+    path(
+        "administrasi/",
+        login_required(views.administrasi),
+        name="administrasi",
+    ),
+    ##### USER #####
+    path("add_user/", login_required(views.add_user), name="add_user"),
+    path(
+        "edit_user/<int:user_id>/",
+        login_required(views.edit_user),
+        name="edit_user",
+    ),
+    path(
+        "delete_user/<int:user_id>/",
+        login_required(views.delete_user),
+        name="delete_user",
     ),
 ]

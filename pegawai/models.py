@@ -42,47 +42,48 @@ class Jabatan(models.Model):
         JFAUPEN = "11", _("JF Auditor Penyelia")
         JFAUPER = "12", _("JF Auditor Pertama")
         JFAUMAD = "13", _("JF Auditor Madya")
-        JFAUUT = "14", _("JF Auditor Utama")
-        JFPPUPDP = "15", _(
+        JFAMUDA = "14", _("JF Auditor Muda")
+        JFAUUT = "15", _("JF Auditor Utama")
+        JFPPUPDP = "16", _(
             "JF Pengawas Penyelenggaraan Urusan Pemerintahan Daerah Pertama"
         )
-        JFPPUPDMU = "16", _(
+        JFPPUPDMU = "17", _(
             "JF Pengawas Penyelenggaraan Urusan Pemerintahan Daerah Muda"
         )
-        JFPPUPDMA = "17", _(
+        JFPPUPDMA = "18", _(
             "JF Pengawas Penyelenggaraan Urusan Pemerintahan Daerah Madya"
         )
-        JFAUKEPER = "18", _("JF Auditor Kepegawaian Pertama")
-        JFAUKEMU = "19", _("JF Auditor Kepegawaian Muda")
-        JFAUKEMA = "20", _("JF Auditor Kepegawaian Madya")
-        JFAKPPER = "21", _("JF Analis Keuangan Pusat dan Daerah Ahli Pertama")
-        JFAKPMU = "22", _("JF Analis Keuangan Pusat dan Daerah Ahli Muda")
-        JFAKPMA = "23", _("JF Analis Keuangan Pusat dan Daerah Ahli Madya")
-        JFPERAPER = "24", _("JF Perencana Ahli Pertama")
-        JFPERAMU = "25", _("JF Perencana Ahli Muda")
-        JFPERAMA = "26", _("JF Perencana Ahli Madya")
-        JFPELABATE = "27", _("JF Penata Laksana Barang Terampil")
-        JFPELABAMA = "28", _("JF Penata Laksana Barang Mahir")
-        JFPELABAPE = "29", _("JF Penata Laksana Barang Penyelia")
-        ATLLHP = "30", _("Analis Tindak Lanjut Laporan Hasil Pemeriksaan")
-        APIP = "31", _("Analis Pengawasan Intern Pemerintah")
-        AHPPM = "32", _("Analis Hasil Pengawasan dan Pengaduan Masyarakat")
-        PDLP = "33", _("Pengelola Data Laporan dan Pengaduan")
-        PLHPKN = "34", _("Penelaah Laporan Hasil Pemeriksaan dan Kerugian Negara")
-        PRKSP = "35", _("Penyusun Rencana Kebutuhan Sarana dan Prasarana")
-        PSPK = "36", _("Pengelola Sarana dan Prasarana Kantor")
-        PSIMK = "37", _("Pengelola Sistem Informasi Manajemen Kepegawaian")
-        PEUM = "38", _("Pengadministrasi Umum")
-        PMUDI = "39", _("Pengemudi")
-        PAMAN = "40", _("Petugas Keamanan")
-        PIHAN = "41", _("Pramu Kebersihan")
-        BENDA = "42", _("Bendahara")
-        PLKEU = "43", _("Penata Laporan Keuangan")
-        PKEU = "44", _("Pengelola Keuangan")
-        PPKIN = "45", _("Pengevaluasi Program dan Kinerja")
-        PRKAN = "46", _("Penyusun Rencana Kegiatan dan Anggaran")
-        PMDEV = "47", _("Pengelola Monitoring dan Evaluasi")
-        PPPRO = "48", _("Pengadministrasi Perencanaan dan Program")
+        JFAUKEPER = "19", _("JF Auditor Kepegawaian Pertama")
+        JFAUKEMU = "20", _("JF Auditor Kepegawaian Muda")
+        JFAUKEMA = "21", _("JF Auditor Kepegawaian Madya")
+        JFAKPPER = "22", _("JF Analis Keuangan Pusat dan Daerah Ahli Pertama")
+        JFAKPMU = "23", _("JF Analis Keuangan Pusat dan Daerah Ahli Muda")
+        JFAKPMA = "24", _("JF Analis Keuangan Pusat dan Daerah Ahli Madya")
+        JFPERAPER = "25", _("JF Perencana Ahli Pertama")
+        JFPERAMU = "26", _("JF Perencana Ahli Muda")
+        JFPERAMA = "27", _("JF Perencana Ahli Madya")
+        JFPELABATE = "28", _("JF Penata Laksana Barang Terampil")
+        JFPELABAMA = "29", _("JF Penata Laksana Barang Mahir")
+        JFPELABAPE = "30", _("JF Penata Laksana Barang Penyelia")
+        ATLLHP = "31", _("Analis Tindak Lanjut Laporan Hasil Pemeriksaan")
+        APIP = "32", _("Analis Pengawasan Intern Pemerintah")
+        AHPPM = "33", _("Analis Hasil Pengawasan dan Pengaduan Masyarakat")
+        PDLP = "34", _("Pengelola Data Laporan dan Pengaduan")
+        PLHPKN = "35", _("Penelaah Laporan Hasil Pemeriksaan dan Kerugian Negara")
+        PRKSP = "36", _("Penyusun Rencana Kebutuhan Sarana dan Prasarana")
+        PSPK = "37", _("Pengelola Sarana dan Prasarana Kantor")
+        PSIMK = "38", _("Pengelola Sistem Informasi Manajemen Kepegawaian")
+        PEUM = "39", _("Pengadministrasi Umum")
+        PMUDI = "40", _("Pengemudi")
+        PAMAN = "41", _("Petugas Keamanan")
+        PIHAN = "42", _("Pramu Kebersihan")
+        BENDA = "43", _("Bendahara")
+        PLKEU = "44", _("Penata Laporan Keuangan")
+        PKEU = "45", _("Pengelola Keuangan")
+        PPKIN = "46", _("Pengevaluasi Program dan Kinerja")
+        PRKAN = "47", _("Penyusun Rencana Kegiatan dan Anggaran")
+        PMDEV = "48", _("Pengelola Monitoring dan Evaluasi")
+        PPPRO = "49", _("Pengadministrasi Perencanaan dan Program")
 
     nama_jabatan = models.CharField(
         blank=False,
@@ -186,14 +187,7 @@ class AngkaKredit(models.Model):
     nomor_pak = models.CharField(blank=False, max_length=200)
     tanggal_pak = models.DateField(blank=False)
     nilai_pak = models.IntegerField(blank=False)
-
-    class MasaPenilaian(models.TextChoices):
-        SEM1 = "Semester Ganjil", _("Semester Ganjil")
-        SEM2 = "Semester Genap", _("Semester Genap")
-
-    masa_penilaian_pak = models.CharField(
-        blank=False, max_length=200, choices=MasaPenilaian.choices
-    )
+    masa_penilaian_pak = models.DateField(blank=False)
     file_pak = models.FileField(upload_to="media/angkaKredit/")
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=False, default=None

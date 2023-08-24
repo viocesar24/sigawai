@@ -186,7 +186,7 @@ class AngkaKredit(models.Model):
     id_pak = models.AutoField(primary_key=True)
     nomor_pak = models.CharField(blank=False, max_length=200)
     tanggal_pak = models.DateField(blank=False)
-    nilai_pak = models.IntegerField(blank=False)
+    nilai_pak = models.FloatField(blank=False)
     masa_penilaian_pak = models.DateField(blank=False)
     file_pak = models.FileField(upload_to="media/angkaKredit/")
     user = models.ForeignKey(

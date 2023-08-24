@@ -156,6 +156,10 @@ def index(request):
         # Ubah format tanggal PAK menjadi "YYYY/MM/DD"
         for ak in pak:
             ak.tanggal_pak = ak.tanggal_pak.strftime("%Y-%m-%d")
+
+            # Ubah format nilai_pak dari koma (,) menjadi titik (.)
+            ak.nilai_pak = str(ak.nilai_pak).replace(',', '.')
+
             pak_data.append(
                 {
                     "tanggal_pak": ak.tanggal_pak,
@@ -376,6 +380,10 @@ def profile(request):
         # Ubah format tanggal PAK menjadi "YYYY/MM/DD"
         for ak in pak:
             ak.tanggal_pak = ak.tanggal_pak.strftime("%Y-%m-%d")
+
+            # Ubah format nilai_pak dari koma (,) menjadi titik (.)
+            ak.nilai_pak = str(ak.nilai_pak).replace(',', '.')
+
             pak_data.append(
                 {
                     "tanggal_pak": ak.tanggal_pak,
@@ -2396,6 +2404,10 @@ def administrasi(request):
 
     if pak.exists():
         for ak in pak:
+
+            # Ubah format nilai_pak dari koma (,) menjadi titik (.)
+            ak.nilai_pak = str(ak.nilai_pak).replace(',', '.')
+            
             pak_data.append(
                 {
                     "nilai_pak": ak.nilai_pak,

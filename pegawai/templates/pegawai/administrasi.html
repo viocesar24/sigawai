@@ -40,37 +40,6 @@
                         <li class="nav-item">
                             <a class="nav-link {% if request.path == '/export_to_excel/' %}active{% endif %}" href="{% url 'export_to_excel' %}">Export Data <i class="bi bi-download"></i></a>
                         </li>
-                        <li class="nav-item">
-                            <!-- Button trigger modal import data database -->
-                            <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#importData">
-                                Import Data <i class="bi bi-upload"></i>
-                            </a>
-                            <!-- Modal import data database -->
-                            <div class="modal fade" id="importData" tabindex="-1" aria-labelledby="importDataLabel" aria-hidden="true">
-                                <div class="modal-dialog modal-dialog-centered">
-                                    <div class="modal-content">
-                                        <form method="post" action="{% url 'import_from_excel' %}" enctype="multipart/form-data">
-                                            {% csrf_token %}
-                                            <div class="modal-header">
-                                                <h1 class="modal-title fs-5" id="importDataLabel">Import Data</h1>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                            </div>
-                                            <div class="modal-body">
-                                                {% csrf_token %}
-                                                <div class="form-floating mb-1">
-                                                    <input name="file_import_data" type="file" class="form-control" id="floatingFileImportData" required>
-                                                    <label for="floatingFileImportData">File Import Data*</label>
-                                                </div>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                                                <button type="submit" class="btn btn-primary">Import</button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        </li>
                         {% endif %}
                         <li class="nav-item">
                             <a class="nav-link {% if request.path == '/signout/' %}active{% endif %}" href="{% url 'signout' %}">Keluar</a>
